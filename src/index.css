@@ -1,14 +1,37 @@
 :root {
-    font-family: "Noto Sans TC", system-ui, -apple-system, "Segoe UI", sans-serif;
-    line-height: 1.5;
-    color: #2b2320;
-    background-color: #fbf7f0;
-}
+    --text: #4a4238;
+    --text-h: #241d14;
+    --bg: #fbf7f0;
+    --panel: #ffffff;
+    --border: #e7ded0;
+    --accent: #e0653a;
 
-* {
-    box-sizing: border-box;
+    --sans: system-ui, "Segoe UI", "Noto Sans TC", Roboto, sans-serif;
+
+    font: 16px/1.6 var(--sans);
+    color: var(--text);
+    background: var(--bg);
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 body {
+    margin: 0;
+}
+
+#root {
+    min-height: 100svh;
+}
+
+h1,
+h2 {
+    color: var(--text-h);
+    font-weight: 700;
+    margin: 0;
+}
+
+p {
     margin: 0;
 }
