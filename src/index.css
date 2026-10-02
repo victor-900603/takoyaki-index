@@ -1,0 +1,14 @@
+:root {
+    font-family: "Noto Sans TC", system-ui, -apple-system, "Segoe UI", sans-serif;
+    line-height: 1.5;
+    color: #2b2320;
+    background-color: #fbf7f0;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+}
