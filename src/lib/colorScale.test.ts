@@ -6,9 +6,9 @@ import {
     MIN_SAMPLE,
     NO_DATA_COLOR,
 } from "./colorScale";
-import type { CountyStat } from "./stats";
+import type { RegionStat } from "./stats";
 
-function stat(avg: number, sampleCount = MIN_SAMPLE): CountyStat {
+function stat(avg: number, sampleCount = MIN_SAMPLE): RegionStat {
     return { avg, median: avg, sampleCount };
 }
 
@@ -24,7 +24,7 @@ describe("buildColorScale", () => {
     });
 
     it("足夠樣本依分位對應到色階兩端", () => {
-        const stats = new Map<string, CountyStat>([
+        const stats = new Map<string, RegionStat>([
             ["a", stat(8)],
             ["b", stat(9)],
             ["c", stat(10)],
@@ -38,7 +38,7 @@ describe("buildColorScale", () => {
     });
 
     it("分位門檻數為色階數減一", () => {
-        const stats = new Map<string, CountyStat>([
+        const stats = new Map<string, RegionStat>([
             ["a", stat(8)],
             ["b", stat(9)],
             ["c", stat(10)],

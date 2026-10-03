@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { unitPrice, type PriceRecord, type Shop } from "./shops";
-import { aggregateByCounty } from "./stats";
+import { aggregateByCounty, aggregateByDistrict } from "./stats";
 
 function record(
     box_price: number,
@@ -18,12 +18,13 @@ function shop(
     county: string,
     prices: PriceRecord[],
     place_id = county,
+    district = "區",
 ): Shop {
     return {
         place_id,
         name: `${county}店`,
         county,
-        district: "區",
+        district,
         prices,
     };
 }
@@ -88,5 +89,47 @@ describe("aggregateByCounty", () => {
             median: 11,
             sampleCount: 2,
         });
+    });
+});
+
+describe("aggregateByDistrict", () => {
+    it("只統計指定縣市並以鄉鎮市區分組", () => {
+        const shops = [
+            shop("台北市", [record(60)], "a", "中山區"),
+            shop("台北市", [record(72)], "b", "中山區"),
+            shop("台北市", [record(84)], "c", "大安區"),
+            shop("高雄市", [record(54)], "d", "苓雅區"),
+        ];
+
+        const stats = aggregateByDistrict(shops, "台北市");
+        expect(stats.get("中山區")).toEqual({
+            avg: 11,
+            median: 11,
+            sampleCount: 2,
+        });
+        expect(stats.get("大安區")).toEqual({
+            avg: 14,
+            median: 14,
+            sampleCount: 1,
+        });
+        expect(stats.has("苓雅區")).toBe(false);
+    });
+
+    it("同名鄉鎮市區不跨縣市合併", () => {
+        const shops = [
+            shop("台北市", [record(60)], "a", "中正區"),
+            shop("基隆市", [record(90)], "b", "中正區"),
+        ];
+
+        expect(aggregateByDistrict(shops, "台北市").get("中正區")).toEqual({
+            avg: 10,
+            median: 10,
+            sampleCount: 1,
+        });
+    });
+
+    it("無價格紀錄的店家不列入統計", () => {
+        const shops = [shop("台北市", [], "a", "信義區")];
+        expect(aggregateByDistrict(shops, "台北市").has("信義區")).toBe(false);
     });
 });

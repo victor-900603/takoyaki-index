@@ -1,16 +1,16 @@
-import type { CountyStat } from "../lib/stats";
+import type { RegionStat } from "../lib/stats";
 
 interface MapTooltipProps {
     x: number;
     y: number;
-    county: string;
-    stat: CountyStat | undefined;
+    name: string;
+    stat: RegionStat | undefined;
 }
 
-export default function MapTooltip({ x, y, county, stat }: MapTooltipProps) {
+export default function MapTooltip({ x, y, name, stat }: MapTooltipProps) {
     return (
         <div className="map-tooltip" style={{ left: x, top: y }}>
-            <strong className="map-tooltip__name">{county}</strong>
+            <strong className="map-tooltip__name">{name}</strong>
             {stat ? (
                 <>
                     <span>平均 {stat.avg.toFixed(1)} 元／顆</span>

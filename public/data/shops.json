@@ -314,5 +314,77 @@
         "prices": [
             { "box_price": 55, "pieces_per_box": 6, "observed_at": "2026-08-10", "source": "fake" }
         ]
+    },
+    {
+        "place_id": "fake-036",
+        "name": "章魚燒 中山二店",
+        "county": "台北市",
+        "district": "中山區",
+        "prices": [
+            { "box_price": 48, "pieces_per_box": 6, "observed_at": "2026-09-21", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-037",
+        "name": "章魚燒 中山三店",
+        "county": "台北市",
+        "district": "中山區",
+        "prices": [
+            { "box_price": 54, "pieces_per_box": 6, "observed_at": "2026-09-22", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-038",
+        "name": "章魚燒 大安二店",
+        "county": "台北市",
+        "district": "大安區",
+        "prices": [
+            { "box_price": 60, "pieces_per_box": 6, "observed_at": "2026-09-19", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-039",
+        "name": "章魚燒 大安三店",
+        "county": "台北市",
+        "district": "大安區",
+        "prices": [
+            { "box_price": 72, "pieces_per_box": 6, "observed_at": "2026-09-20", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-040",
+        "name": "章魚燒 士林二店",
+        "county": "台北市",
+        "district": "士林區",
+        "prices": [
+            { "box_price": 42, "pieces_per_box": 6, "observed_at": "2026-09-16", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-041",
+        "name": "章魚燒 信義二店",
+        "county": "台北市",
+        "district": "信義區",
+        "prices": [
+            { "box_price": 78, "pieces_per_box": 6, "observed_at": "2026-09-13", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-042",
+        "name": "章魚燒 信義三店",
+        "county": "台北市",
+        "district": "信義區",
+        "prices": [
+            { "box_price": 84, "pieces_per_box": 6, "observed_at": "2026-09-14", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-043",
+        "name": "章魚燒 中正店",
+        "county": "台北市",
+        "district": "中正區",
+        "prices": [
+            { "box_price": 54, "pieces_per_box": 6, "observed_at": "2026-09-17", "source": "fake" }
+        ]
     }
 ]

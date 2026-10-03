@@ -7,6 +7,7 @@ import {
 interface LegendProps {
     thresholds: number[];
     colors: readonly string[];
+    title: string;
 }
 
 function formatRange(index: number, thresholds: number[]): string {
@@ -17,10 +18,10 @@ function formatRange(index: number, thresholds: number[]): string {
     return `${thresholds[index - 1].toFixed(1)}–${thresholds[index].toFixed(1)}`;
 }
 
-export default function Legend({ thresholds, colors }: LegendProps) {
+export default function Legend({ thresholds, colors, title }: LegendProps) {
     return (
         <div className="legend">
-            <h2 className="legend__title">每顆單價（元）</h2>
+            <h2 className="legend__title">{title}</h2>
             <ul className="legend__list">
                 {thresholds.length > 0 &&
                     colors.map((color, index) => (

@@ -1,6 +1,6 @@
 import { unitPrice, type Shop } from "./shops";
 
-export interface CountyStat {
+export interface RegionStat {
     avg: number;
     median: number;
     sampleCount: number;
@@ -26,24 +26,42 @@ function median(values: number[]): number {
         : sorted[mid];
 }
 
-export function aggregateByCounty(shops: Shop[]): Map<string, CountyStat> {
+function aggregateBy(
+    shops: Shop[],
+    keyOf: (shop: Shop) => string | null,
+): Map<string, RegionStat> {
     const grouped = new Map<string, number[]>();
 
     for (const shop of shops) {
+        const key = keyOf(shop);
+        if (key === null) continue;
         const value = latestUnitPrice(shop);
         if (value === null) continue;
-        const values = grouped.get(shop.county);
+        const values = grouped.get(key);
         if (values) values.push(value);
-        else grouped.set(shop.county, [value]);
+        else grouped.set(key, [value]);
     }
 
-    const result = new Map<string, CountyStat>();
-    for (const [county, values] of grouped) {
-        result.set(county, {
+    const result = new Map<string, RegionStat>();
+    for (const [key, values] of grouped) {
+        result.set(key, {
             avg: average(values),
             median: median(values),
             sampleCount: values.length,
         });
     }
     return result;
+}
+
+export function aggregateByCounty(shops: Shop[]): Map<string, RegionStat> {
+    return aggregateBy(shops, (shop) => shop.county);
+}
+
+export function aggregateByDistrict(
+    shops: Shop[],
+    county: string,
+): Map<string, RegionStat> {
+    return aggregateBy(shops, (shop) =>
+        shop.county === county ? shop.district : null,
+    );
 }

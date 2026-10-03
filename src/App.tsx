@@ -4,7 +4,11 @@ import Legend from "./components/Legend";
 import MapTooltip from "./components/MapTooltip";
 import { useTaiwanGeo } from "./hooks/useTaiwanGeo";
 import { useShops } from "./hooks/useShops";
-import { aggregateByCounty } from "./lib/stats";
+import {
+    aggregateByCounty,
+    aggregateByDistrict,
+    type RegionStat,
+} from "./lib/stats";
 import { buildColorScale } from "./lib/colorScale";
 import "./App.css";
 
@@ -14,30 +18,71 @@ interface HoverState {
     y: number;
 }
 
+type View = { level: "county" } | { level: "town"; county: string };
+
 function App() {
     const { data: geo, error: geoError, loading: geoLoading } = useTaiwanGeo();
     const { data: shops } = useShops();
-    const [selectedCounty, setSelectedCounty] = useState<string | null>(null);
+    const [view, setView] = useState<View>({ level: "county" });
+    const [selectedDistrict, setSelectedDistrict] = useState<string | null>(
+        null,
+    );
     const [hover, setHover] = useState<HoverState | null>(null);
     const panelRef = useRef<HTMLElement>(null);
 
     const statsByCounty = useMemo(() => aggregateByCounty(shops), [shops]);
-    const colorScale = useMemo(
-        () => buildColorScale(statsByCounty),
-        [statsByCounty],
+    const statsByDistrict = useMemo(
+        () =>
+            view.level === "town"
+                ? aggregateByDistrict(shops, view.county)
+                : new Map<string, RegionStat>(),
+        [shops, view],
     );
 
-    const fillByCounty = useMemo(() => {
+    const activeStats =
+        view.level === "town" ? statsByDistrict : statsByCounty;
+    const colorScale = useMemo(
+        () => buildColorScale(activeStats),
+        [activeStats],
+    );
+
+    const fillByRegion = useMemo(() => {
         const fills = new Map<string, string>();
         if (!geo) return fills;
-        for (const county of geo.counties) {
-            const name = county.properties.COUNTYNAME;
-            fills.set(name, colorScale.colorFor(statsByCounty.get(name)));
+        if (view.level === "town") {
+            for (const town of geo.towns) {
+                if (town.properties.COUNTYNAME !== view.county) continue;
+                const name = town.properties.TOWNNAME;
+                fills.set(name, colorScale.colorFor(statsByDistrict.get(name)));
+            }
+        } else {
+            for (const feature of geo.counties) {
+                const name = feature.properties.COUNTYNAME;
+                fills.set(name, colorScale.colorFor(statsByCounty.get(name)));
+            }
         }
         return fills;
-    }, [geo, colorScale, statsByCounty]);
+    }, [geo, view, colorScale, statsByCounty, statsByDistrict]);
 
-    const handleHoverCounty = (
+    const handleSelectRegion = (name: string) => {
+        if (view.level === "county") {
+            setView({ level: "town", county: name });
+            setSelectedDistrict(null);
+        } else {
+            setSelectedDistrict((current) =>
+                current === name ? null : name,
+            );
+        }
+        setHover(null);
+    };
+
+    const handleBack = () => {
+        setView({ level: "county" });
+        setSelectedDistrict(null);
+        setHover(null);
+    };
+
+    const handleHoverRegion = (
         name: string | null,
         point: { x: number; y: number } | null,
     ) => {
@@ -50,8 +95,9 @@ function App() {
         setHover({ name, x: point.x - rect.left, y: point.y - rect.top });
     };
 
-    const selectedStat = selectedCounty
-        ? statsByCounty.get(selectedCounty)
+    const isTownView = view.level === "town";
+    const selectedStat = isTownView && selectedDistrict
+        ? statsByDistrict.get(selectedDistrict)
         : undefined;
 
     return (
@@ -65,6 +111,27 @@ function App() {
 
             <main className="app__main">
                 <section className="map-panel" ref={panelRef}>
+                    {isTownView && (
+                        <div className="map-nav">
+                            <button
+                                type="button"
+                                className="map-nav__back"
+                                onClick={handleBack}
+                            >
+                                返回全台
+                            </button>
+                            <nav
+                                className="map-nav__crumb"
+                                aria-label="目前檢視層級"
+                            >
+                                <span>全台</span>
+                                <span aria-hidden="true">/</span>
+                                <span className="map-nav__current">
+                                    {view.county}
+                                </span>
+                            </nav>
+                        </div>
+                    )}
                     {geoLoading && (
                         <p className="map-panel__status">地圖載入中…</p>
                     )}
@@ -76,28 +143,34 @@ function App() {
                     {geo && (
                         <TaiwanMap
                             geo={geo}
-                            selectedCounty={selectedCounty}
-                            onSelectCounty={setSelectedCounty}
-                            fillByCounty={fillByCounty}
-                            onHoverCounty={handleHoverCounty}
+                            level={view.level}
+                            county={isTownView ? view.county : null}
+                            selectedRegion={
+                                isTownView ? selectedDistrict : null
+                            }
+                            fillByRegion={fillByRegion}
+                            onSelectRegion={handleSelectRegion}
+                            onHoverRegion={handleHoverRegion}
                         />
                     )}
                     {hover && (
                         <MapTooltip
                             x={hover.x}
                             y={hover.y}
-                            county={hover.name}
-                            stat={statsByCounty.get(hover.name)}
+                            name={hover.name}
+                            stat={activeStats.get(hover.name)}
                         />
                     )}
                 </section>
 
                 <aside className="info-panel">
-                    <h2>縣市</h2>
+                    <h2>{isTownView ? view.county : "縣市"}</h2>
                     <p>
-                        {selectedCounty
-                            ? `已選取：${selectedCounty}`
-                            : "點擊地圖上的縣市開始探索。"}
+                        {isTownView
+                            ? selectedDistrict
+                                ? `已選取：${selectedDistrict}`
+                                : "點擊地圖上的鄉鎮市區查看統計。"
+                            : "點擊地圖上的縣市查看鄉鎮市區。"}
                     </p>
                     {selectedStat && (
                         <dl className="info-panel__stats">
@@ -118,6 +191,11 @@ function App() {
                     <Legend
                         thresholds={colorScale.thresholds}
                         colors={colorScale.colors}
+                        title={
+                            isTownView
+                                ? "鄉鎮市區每顆單價（元）"
+                                : "縣市每顆單價（元）"
+                        }
                     />
                 </aside>
             </main>

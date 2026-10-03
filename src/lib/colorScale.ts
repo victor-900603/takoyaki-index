@@ -1,5 +1,5 @@
 import { scaleQuantile } from "d3-scale";
-import type { CountyStat } from "./stats";
+import type { RegionStat } from "./stats";
 
 export const NO_DATA_COLOR = "#d9d2c6";
 export const LOW_SAMPLE_COLOR = "#c2b8a6";
@@ -14,12 +14,12 @@ export const LEVEL_COLORS = [
 ] as const;
 
 export interface ColorScale {
-    colorFor(stat: CountyStat | undefined): string;
+    colorFor(stat: RegionStat | undefined): string;
     thresholds: number[];
     colors: readonly string[];
 }
 
-export function buildColorScale(stats: Map<string, CountyStat>): ColorScale {
+export function buildColorScale(stats: Map<string, RegionStat>): ColorScale {
     const values: number[] = [];
     for (const stat of stats.values()) {
         if (stat.sampleCount >= MIN_SAMPLE) values.push(stat.avg);
