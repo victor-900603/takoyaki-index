@@ -17,6 +17,18 @@ export function unitPrice(record: PriceRecord): number {
     return record.box_price / record.pieces_per_box;
 }
 
+export function latestPrice(shop: Shop): PriceRecord | null {
+    if (shop.prices.length === 0) return null;
+    return shop.prices.reduce((a, b) =>
+        a.observed_at >= b.observed_at ? a : b,
+    );
+}
+
+export function latestUnitPrice(shop: Shop): number | null {
+    const price = latestPrice(shop);
+    return price === null ? null : unitPrice(price);
+}
+
 const DEFAULT_URL = "data/shops.json";
 
 export async function loadShops(url = DEFAULT_URL): Promise<Shop[]> {

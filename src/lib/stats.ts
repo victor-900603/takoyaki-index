@@ -1,5 +1,5 @@
 import { quantile } from "./quantile";
-import { unitPrice, type Shop } from "./shops";
+import { latestUnitPrice, type Shop } from "./shops";
 
 export interface RegionStat {
     avg: number;
@@ -7,14 +7,6 @@ export interface RegionStat {
     sampleCount: number;
     min: number;
     max: number;
-}
-
-function latestUnitPrice(shop: Shop): number | null {
-    if (shop.prices.length === 0) return null;
-    const latest = shop.prices.reduce((a, b) =>
-        a.observed_at >= b.observed_at ? a : b,
-    );
-    return unitPrice(latest);
 }
 
 function average(values: number[]): number {

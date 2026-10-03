@@ -403,6 +403,159 @@
     font-size: 12.5px;
 }
 
+/* Shop list */
+.shop-list {
+    margin-top: 24px;
+    padding: 24px 28px 10px;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    background: var(--card);
+}
+
+.shop-list__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.shop-list__title {
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.shop-list__scope {
+    margin-top: 4px;
+    color: var(--ink-2);
+    font-size: 12.5px;
+}
+
+.shop-list__controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.shop-list__search {
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--card);
+    color: var(--ink);
+    font: inherit;
+    font-size: 13px;
+    padding: 6px 14px;
+    min-width: 160px;
+    outline: none;
+    transition: border-color 0.15s ease;
+}
+
+.shop-list__search:focus-visible {
+    border-color: var(--accent);
+}
+
+.shop-list__search::placeholder {
+    color: var(--ink-2);
+}
+
+.shop-list__sort {
+    display: inline-flex;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    overflow: hidden;
+    background: var(--card);
+}
+
+.shop-list__sort-button {
+    border: 0;
+    background: transparent;
+    color: var(--ink);
+    font: inherit;
+    font-size: 12.5px;
+    font-weight: 500;
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.shop-list__sort-button + .shop-list__sort-button {
+    border-left: 1px solid var(--line);
+}
+
+.shop-list__sort-button.is-active {
+    background: var(--accent);
+    color: #fff;
+}
+
+.shop-list__empty {
+    padding: 8px 0 18px;
+    color: var(--ink-2);
+    font-size: 14px;
+}
+
+.shop-list__scroll {
+    overflow-x: auto;
+}
+
+.shop-list__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+}
+
+.shop-list__table th,
+.shop-list__table td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+}
+
+.shop-list__table thead th {
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--ink-2);
+    border-bottom: 1.5px solid var(--ink);
+}
+
+.shop-list__table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.shop-list__table .is-numeric {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.shop-list__shop {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.shop-list__link {
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+}
+
+.shop-list__link:hover,
+.shop-list__link:focus-visible {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+}
+
+.shop-list__badge {
+    padding: 1px 7px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 10.5px;
+    font-weight: 700;
+}
+
 @media (max-width: 760px) {
     .app {
         padding: 32px 18px 56px;
@@ -455,5 +608,84 @@
 
     .spotlight__stat dd {
         font-size: 27px;
+    }
+
+    .shop-list {
+        padding: 20px;
+    }
+
+    .shop-list__head {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .shop-list__controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .shop-list__search {
+        min-width: 0;
+    }
+
+    .shop-list__sort {
+        align-self: flex-start;
+    }
+
+    .shop-list__scroll {
+        overflow-x: visible;
+    }
+
+    .shop-list__table,
+    .shop-list__table thead,
+    .shop-list__table tbody,
+    .shop-list__table tr,
+    .shop-list__table th,
+    .shop-list__table td {
+        display: block;
+        width: auto;
+    }
+
+    .shop-list__table thead {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+    }
+
+    .shop-list__table tr {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 12px 14px;
+        margin-bottom: 12px;
+    }
+
+    .shop-list__table tbody tr:last-child {
+        margin-bottom: 0;
+    }
+
+    .shop-list__table td {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 4px 0;
+        border: 0;
+        white-space: normal;
+        text-align: right;
+    }
+
+    .shop-list__table td::before {
+        content: attr(data-label);
+        color: var(--ink-2);
+        font-size: 12px;
+        font-weight: 500;
+        text-align: left;
+    }
+
+    .shop-list__table .is-numeric {
+        text-align: right;
     }
 }

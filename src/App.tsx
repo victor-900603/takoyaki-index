@@ -3,6 +3,7 @@ import TaiwanMap from "./components/TaiwanMap";
 import Legend from "./components/Legend";
 import MapTooltip from "./components/MapTooltip";
 import ViewControls from "./components/ViewControls";
+import ShopList from "./components/ShopList";
 import { useTaiwanGeo } from "./hooks/useTaiwanGeo";
 import { useShops } from "./hooks/useShops";
 import {
@@ -22,6 +23,7 @@ import {
     scaleStats,
     type Metric,
 } from "./lib/metric";
+import { filterShops } from "./lib/shopList";
 import "./App.css";
 
 interface HoverState {
@@ -127,6 +129,26 @@ function App() {
     const legendTitle = `${isTownView ? "鄉鎮市區" : "縣市"}${
         METRIC_LABEL[metric]
     }（元）`;
+
+    const scopedShops = useMemo(
+        () =>
+            filterShops(
+                shops,
+                view.level === "town"
+                    ? {
+                          level: "town",
+                          county: view.county,
+                          district: selectedDistrict,
+                      }
+                    : { level: "county" },
+            ),
+        [shops, view, selectedDistrict],
+    );
+    const scopeLabel = isTownView
+        ? selectedDistrict
+            ? `${view.county}${selectedDistrict}`
+            : view.county
+        : "全台";
 
     return (
         <div className="app">
@@ -252,6 +274,15 @@ function App() {
                         </p>
                     )}
                 </section>
+
+                <ShopList
+                    shops={scopedShops}
+                    scopeLabel={scopeLabel}
+                    showCounty={!isTownView}
+                    factor={factor}
+                    compareLabel={METRIC_LABEL[metric]}
+                    compareUnit={METRIC_UNIT[metric]}
+                />
             </main>
 
             <footer className="app__footer">
