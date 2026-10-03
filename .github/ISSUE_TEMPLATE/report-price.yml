@@ -1,0 +1,52 @@
+name: 回報章魚燒價格
+description: 新增或更新一間店家的章魚燒價格
+title: "[價格回報] "
+labels: ["price-report"]
+body:
+    - type: input
+      id: name
+      attributes:
+          label: 店名
+          description: 章魚燒店的名稱
+          placeholder: 章魚燒專賣店
+      validations:
+          required: true
+    - type: input
+      id: map_url
+      attributes:
+          label: Google Maps 連結
+          description: 在 Google 地圖找到該店後，複製分享連結貼上
+          placeholder: https://maps.app.goo.gl/...
+      validations:
+          required: true
+    - type: input
+      id: box_price
+      attributes:
+          label: 盒價（元）
+          description: 一整盒的價格
+          placeholder: "60"
+      validations:
+          required: true
+    - type: input
+      id: pieces_per_box
+      attributes:
+          label: 每盒顆數
+          value: "6"
+      validations:
+          required: true
+    - type: input
+      id: observed_at
+      attributes:
+          label: 觀測日期
+          description: 看到這個價格的日期（YYYY-MM-DD）
+          placeholder: "2026-10-01"
+      validations:
+          required: true
+    - type: textarea
+      id: note
+      attributes:
+          label: 備註
+          description: 其他補充，可留空
+    - type: markdown
+      attributes:
+          value: 送出後會自動建立一個更新資料的 Pull Request 供審核。

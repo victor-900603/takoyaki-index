@@ -8,6 +8,7 @@
         "build": "tsc -b && vite build",
         "lint": "oxlint",
         "data:build": "tsx scripts/build-data.ts",
+        "data:report": "tsx scripts/parse-report.ts",
         "test": "vitest run",
         "test:watch": "vitest",
         "coverage": "vitest run --coverage",

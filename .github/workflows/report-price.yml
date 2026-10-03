@@ -1,0 +1,37 @@
+name: 章魚燒價格回報
+
+on:
+    issues:
+        types: [opened, edited]
+
+permissions:
+    contents: write
+    pull-requests: write
+
+jobs:
+    report:
+        if: contains(github.event.issue.body, 'Google Maps 連結')
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  cache: npm
+            - run: npm ci
+            - name: 併入回報
+              env:
+                  ISSUE_BODY: ${{ github.event.issue.body }}
+                  ISSUE_NUMBER: ${{ github.event.issue.number }}
+              run: npm run data:report
+            - name: 重新產生資料
+              run: npm run data:build
+            - name: 建立 Pull Request
+              uses: peter-evans/create-pull-request@v7
+              with:
+                  branch: report/issue-${{ github.event.issue.number }}
+                  delete-branch: true
+                  title: 資料回報：issue #${{ github.event.issue.number }}
+                  commit-message: "data: 併入回報 #${{ github.event.issue.number }}"
+                  body: |
+                      由 issue #${{ github.event.issue.number }} 自動產生，審核後合併。

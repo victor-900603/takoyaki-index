@@ -1,8 +1,8 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { feature } from "topojson-client";
-import { dedupeShops, validateShops, type RegionIndex } from "../src/lib/shopData";
+import { buildTopoRegions } from "./topo";
+import { dedupeShops, validateShops } from "../src/lib/shopData";
 import type { Shop } from "../src/lib/shops";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -10,41 +10,9 @@ const rawPath = resolve(root, "data/raw/shops.json");
 const topoPath = resolve(root, "public/data/twTowns.topo.json");
 const outPath = resolve(root, "public/data/shops.json");
 
-function buildRegionIndex(): RegionIndex {
-    const topology = JSON.parse(readFileSync(topoPath, "utf8")) as {
-        objects: Record<string, unknown>;
-    };
-
-    const countyFeatures = feature(
-        topology as never,
-        topology.objects.counties as never,
-    ) as unknown as { features: { properties: { COUNTYNAME: string } }[] };
-
-    const townFeatures = feature(
-        topology as never,
-        topology.objects.towns as never,
-    ) as unknown as {
-        features: { properties: { COUNTYNAME: string; TOWNNAME: string } }[];
-    };
-
-    const counties = new Set<string>();
-    for (const item of countyFeatures.features) {
-        counties.add(item.properties.COUNTYNAME);
-    }
-
-    const districts = new Set<string>();
-    for (const item of townFeatures.features) {
-        districts.add(
-            `${item.properties.COUNTYNAME}|${item.properties.TOWNNAME}`,
-        );
-    }
-
-    return { counties, districts };
-}
-
 function main(): void {
     const raw = JSON.parse(readFileSync(rawPath, "utf8")) as Shop[];
-    const regions = buildRegionIndex();
+    const { regions } = buildTopoRegions(topoPath);
 
     const { shops, warnings } = dedupeShops(raw);
     const errors = validateShops(shops, regions);
@@ -64,7 +32,9 @@ function main(): void {
     }
 
     console.log(`已輸出 ${shops.length} 間店家至 public/data/shops.json`);
-    console.log(`縣市分布：${[...perCounty.entries()].map(([c, n]) => `${c} ${n}`).join("、")}`);
+    console.log(
+        `縣市分布：${[...perCounty.entries()].map(([c, n]) => `${c} ${n}`).join("、")}`,
+    );
     if (warnings.length > 0) {
         console.log(`警告 ${warnings.length} 項：`);
         for (const warning of warnings) console.log(`  - ${warning}`);
