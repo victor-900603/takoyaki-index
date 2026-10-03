@@ -51,6 +51,25 @@ describe("buildColorScale", () => {
         );
     });
 
+    it("回傳足夠樣本資料的最小值與最大值作為範圍", () => {
+        const stats = new Map<string, RegionStat>([
+            ["a", stat(8)],
+            ["b", stat(9)],
+            ["c", stat(10)],
+            ["d", stat(11)],
+            ["e", stat(12)],
+        ]);
+
+        expect(buildColorScale(stats).domain).toEqual([8, 12]);
+    });
+
+    it("無足夠樣本時範圍為 null", () => {
+        expect(buildColorScale(new Map()).domain).toBeNull();
+        expect(
+            buildColorScale(new Map([["台北市", stat(10, 1)]])).domain,
+        ).toBeNull();
+    });
+
     it("全部樣本不足時，已知區域仍為低樣本色", () => {
         const scale = buildColorScale(new Map([["台北市", stat(10, 1)]]));
         expect(scale.colorFor(stat(10, 1))).toBe(LOW_SAMPLE_COLOR);

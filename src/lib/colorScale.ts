@@ -17,6 +17,7 @@ export interface ColorScale {
     colorFor(stat: RegionStat | undefined): string;
     thresholds: number[];
     colors: readonly string[];
+    domain: [number, number] | null;
 }
 
 export function buildColorScale(stats: Map<string, RegionStat>): ColorScale {
@@ -31,6 +32,7 @@ export function buildColorScale(stats: Map<string, RegionStat>): ColorScale {
                 stat ? LOW_SAMPLE_COLOR : NO_DATA_COLOR,
             thresholds: [],
             colors: LEVEL_COLORS,
+            domain: null,
         };
     }
 
@@ -46,5 +48,6 @@ export function buildColorScale(stats: Map<string, RegionStat>): ColorScale {
         },
         thresholds: scale.quantiles(),
         colors: LEVEL_COLORS,
+        domain: [Math.min(...values), Math.max(...values)],
     };
 }

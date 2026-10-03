@@ -153,6 +153,16 @@ function App() {
                             onHoverRegion={handleHoverRegion}
                         />
                     )}
+                    <Legend
+                        thresholds={colorScale.thresholds}
+                        colors={colorScale.colors}
+                        domain={colorScale.domain}
+                        title={
+                            isTownView
+                                ? "鄉鎮市區每顆單價（元）"
+                                : "縣市每顆單價（元）"
+                        }
+                    />
                     {hover && (
                         <MapTooltip
                             x={hover.x}
@@ -188,15 +198,6 @@ function App() {
                             </div>
                         </dl>
                     )}
-                    <Legend
-                        thresholds={colorScale.thresholds}
-                        colors={colorScale.colors}
-                        title={
-                            isTownView
-                                ? "鄉鎮市區每顆單價（元）"
-                                : "縣市每顆單價（元）"
-                        }
-                    />
                 </aside>
             </main>
         </div>

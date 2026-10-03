@@ -7,47 +7,67 @@ import {
 interface LegendProps {
     thresholds: number[];
     colors: readonly string[];
+    domain: [number, number] | null;
     title: string;
 }
 
-function formatRange(index: number, thresholds: number[]): string {
-    if (index === 0) return `< ${thresholds[0].toFixed(1)}`;
-    if (index === thresholds.length) {
-        return `≥ ${thresholds[thresholds.length - 1].toFixed(1)}`;
-    }
-    return `${thresholds[index - 1].toFixed(1)}–${thresholds[index].toFixed(1)}`;
-}
-
-export default function Legend({ thresholds, colors, title }: LegendProps) {
+export default function Legend({
+    thresholds,
+    colors,
+    domain,
+    title,
+}: LegendProps) {
+    const hasScale = domain !== null && thresholds.length > 0;
+    const ticks = hasScale ? [domain[0], ...thresholds, domain[1]] : [];
+    const segmentCount = colors.length;
     return (
         <div className="legend">
             <h2 className="legend__title">{title}</h2>
-            <ul className="legend__list">
-                {thresholds.length > 0 &&
-                    colors.map((color, index) => (
-                        <li key={color} className="legend__item">
+            {hasScale && (
+                <div className="legend__scale">
+                    <div className="legend__bar">
+                        {colors.map((color) => (
                             <span
-                                className="legend__swatch"
+                                key={color}
+                                className="legend__band"
                                 style={{ background: color }}
                             />
-                            <span>{formatRange(index, thresholds)}</span>
-                        </li>
-                    ))}
-                <li className="legend__item">
+                        ))}
+                    </div>
+                    <div className="legend__ticks">
+                        {ticks.map((value, index) => (
+                            <span
+                                key={index}
+                                className="legend__tick"
+                                style={{
+                                    left: `${(index / segmentCount) * 100}%`,
+                                }}
+                            >
+                                <span className="legend__tick-mark" />
+                                <span className="legend__tick-label">
+                                    {value.toFixed(1)}
+                                </span>
+                            </span>
+                        ))}
+                    </div>
+                </div>
+            )}
+            <div className="legend__extras">
+                <span className="legend__extra">
                     <span
                         className="legend__swatch"
                         style={{ background: LOW_SAMPLE_COLOR }}
                     />
-                    <span>樣本不足（少於 {MIN_SAMPLE} 間）</span>
-                </li>
-                <li className="legend__item">
+                    樣本不足（少於 {MIN_SAMPLE} 間）
+                </span>
+                <span className="legend__extra">
                     <span
                         className="legend__swatch"
                         style={{ background: NO_DATA_COLOR }}
                     />
-                    <span>無資料</span>
-                </li>
-            </ul>
+                    無資料
+                </span>
+            </div>
         </div>
     );
 }
