@@ -1,35 +1,66 @@
-# React + TypeScript + Vite
+# 台灣章魚燒價格指數
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+古有大麥克指數，現有台灣章魚燒指數。
 
-Currently, two official plugins are available:
+線上瀏覽：<https://victor-900603.github.io/takoyaki-index/>
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 這是什麼
 
-## React Compiler
+把全台章魚燒的價格放在同一把尺上比較。地圖上每一區的顏色，代表那一區的平均價格水準，不必一家一家問，就能看出哪裡買得便宜、哪裡偏貴。
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 怎麼看這張地圖
 
-## Expanding the Oxlint configuration
+- **兩層檢視**：先看 22 個縣市，點一下縣市就會放大到該縣市的鄉鎮市區，左上角可返回全台。
+- **顏色深淺**：顏色越深代表價格越高，反之越低；滑鼠移到區域上可看到平均、中位數、樣本數與實際價格範圍。
+- **灰色區域**：代表資料太少或還沒有資料。樣本少於 3 間會以灰色呈現，避免用小樣本下定論。
+- **口徑切換**：右上角可在「每顆單價」與「一盒 6 顆」之間切換，也可改看固定級距。
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+## 價格怎麼算
 
-```json
-{
-    "$schema": "./node_modules/oxlint/configuration_schema.json",
-    "plugins": ["react", "typescript", "oxc"],
-    "options": {
-        "typeAware": true
-    },
-    "rules": {
-        "react/rules-of-hooks": "error",
-        "react/only-export-components": [
-            "warn",
-            { "allowConstantExport": true }
-        ]
-    }
-}
+- 章魚燒常以不同顆數包裝，因此一律換算成**每顆單價**（盒價 ÷ 每盒顆數）再比較。
+- 統計以**中位數**為準，較不易被少數特別貴或特別便宜的店家影響；同時保留真實的價格範圍。
+- 每筆價格都附上觀測日期與來源，方便回溯。
+
+## 怎麼回報價格
+
+發現新的店家，或某家店漲價、降價了，都歡迎回報：
+
+1. 開啟[價格回報表單](.github/ISSUE_TEMPLATE/report-price.yml)。
+2. 填寫店名、Google Maps 連結、盒價、每盒顆數與觀測日期。
+3. 系統會自動解析位置、判定所在行政區，並開立更新提案，經確認後就會更新到地圖上。
+
+## 資料從哪來
+
+- 店家資料以 [`data/raw/shops.json`](data/raw/shops.json) 為真實來源，由維護者整理並併入群眾回報。
+- 每筆資料包含盒價、每盒顆數與觀測日期；每顆單價由系統計算，不需手動填寫。
+- 每次更新都會先去除重複店家並檢查資料是否合理，發現問題會中止更新，避免錯誤資料上線。
+
+## 給開發者
+
+本站為純前端靜態網站，使用 Vite 8 + React 19 + TypeScript 6，地圖以 `d3-geo` 與 `topojson-client` 繪製 SVG，測試框架為 Vitest。
+
+```bash
+npm ci                # 安裝相依
+npm run dev           # 啟動開發伺服器
+npm run data:build    # 由 data/raw/shops.json 產生 public/data/shops.json
+npm run data:report   # 解析 Issue 內容並併入真實來源
+npm run test          # 執行單元測試
+npm run lint          # 靜態檢查
+npm run build         # 型別檢查並建置
+npm run preview       # 預覽建置結果
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+主要目錄：
+
+```
+data/raw/          真實來源店家資料
+public/data/       產生檔與圖資
+scripts/           資料建置與回報解析腳本
+src/lib/           統計、色階、資料驗證、回報解析、投影與圖資
+src/hooks/         資料載入 hooks
+src/components/    地圖、圖例、tooltip 與控制項
+```
+
+## 圖資來源
+
+行政區邊界採用 `taiwan-atlas@2021.9.20`（內政部國土測繪中心資料，MIT 授權）。

@@ -137,7 +137,7 @@ function App() {
                     </p>
                     <h1 className="masthead__title">台灣章魚燒價格指數</h1>
                     <p className="masthead__subtitle">
-                        用一張地圖，看看全台章魚燒哪裡買最划算。
+                        古有大麥克指數，現有台灣章魚燒指數。
                     </p>
                 </div>
                 <ViewControls
