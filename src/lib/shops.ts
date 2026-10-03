@@ -17,7 +17,7 @@ export function unitPrice(record: PriceRecord): number {
     return record.box_price / record.pieces_per_box;
 }
 
-const DEFAULT_URL = "/data/shops.json";
+const DEFAULT_URL = "data/shops.json";
 
 export async function loadShops(url = DEFAULT_URL): Promise<Shop[]> {
     const response = await fetch(url);

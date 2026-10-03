@@ -30,7 +30,7 @@ export interface TaiwanGeo {
     nation: Feature<MultiPolygon | Polygon>;
 }
 
-const DEFAULT_URL = "/data/twTowns.topo.json";
+const DEFAULT_URL = "data/twTowns.topo.json";
 
 export async function loadTaiwanGeo(url = DEFAULT_URL): Promise<TaiwanGeo> {
     const response = await fetch(url);
