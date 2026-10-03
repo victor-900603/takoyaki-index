@@ -58,3 +58,7 @@ export function aggregateByDistrict(
         shop.county === county ? shop.district : null,
     );
 }
+
+export function aggregateAll(shops: Shop[]): RegionStat | undefined {
+    return aggregateBy(shops, () => "all").get("all");
+}

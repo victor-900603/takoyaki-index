@@ -17,19 +17,23 @@ export const METRIC_UNIT: Record<Metric, string> = {
     box6: "元／盒",
 };
 
+export function scaleStat(stat: RegionStat, factor: number): RegionStat {
+    return {
+        avg: stat.avg * factor,
+        median: stat.median * factor,
+        sampleCount: stat.sampleCount,
+        min: stat.min * factor,
+        max: stat.max * factor,
+    };
+}
+
 export function scaleStats(
     stats: Map<string, RegionStat>,
     factor: number,
 ): Map<string, RegionStat> {
     const result = new Map<string, RegionStat>();
     for (const [key, stat] of stats) {
-        result.set(key, {
-            avg: stat.avg * factor,
-            median: stat.median * factor,
-            sampleCount: stat.sampleCount,
-            min: stat.min * factor,
-            max: stat.max * factor,
-        });
+        result.set(key, scaleStat(stat, factor));
     }
     return result;
 }

@@ -1,11 +1,17 @@
 import type { RegionStat } from "../lib/stats";
 
+export interface TooltipAction {
+    label: string;
+    onClick: () => void;
+}
+
 interface MapTooltipProps {
     x: number;
     y: number;
     name: string;
     stat: RegionStat | undefined;
     unit: string;
+    action?: TooltipAction;
 }
 
 export default function MapTooltip({
@@ -14,9 +20,15 @@ export default function MapTooltip({
     name,
     stat,
     unit,
+    action,
 }: MapTooltipProps) {
     return (
-        <div className="map-tooltip" style={{ left: x, top: y }}>
+        <div
+            className={
+                "map-tooltip" + (action ? " map-tooltip--interactive" : "")
+            }
+            style={{ left: x, top: y }}
+        >
             <strong className="map-tooltip__name">{name}</strong>
             {stat ? (
                 <>
@@ -33,6 +45,15 @@ export default function MapTooltip({
                 </>
             ) : (
                 <span>尚無資料</span>
+            )}
+            {action && (
+                <button
+                    type="button"
+                    className="map-tooltip__action"
+                    onClick={action.onClick}
+                >
+                    {action.label}
+                </button>
             )}
         </div>
     );

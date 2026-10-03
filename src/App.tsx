@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import TaiwanMap from "./components/TaiwanMap";
 import Legend from "./components/Legend";
 import MapTooltip from "./components/MapTooltip";
@@ -7,9 +7,9 @@ import ShopList from "./components/ShopList";
 import { useTaiwanGeo } from "./hooks/useTaiwanGeo";
 import { useShops } from "./hooks/useShops";
 import {
+    aggregateAll,
     aggregateByCounty,
     aggregateByDistrict,
-    type RegionStat,
 } from "./lib/stats";
 import {
     buildColorScale,
@@ -20,10 +20,12 @@ import {
     METRIC_FACTOR,
     METRIC_LABEL,
     METRIC_UNIT,
+    scaleStat,
     scaleStats,
     type Metric,
 } from "./lib/metric";
 import { filterShops } from "./lib/shopList";
+import { resolveFocus, type MapView } from "./lib/mapFocus";
 import "./App.css";
 
 interface HoverState {
@@ -32,37 +34,48 @@ interface HoverState {
     y: number;
 }
 
-type View = { level: "county" } | { level: "town"; county: string };
+interface Point {
+    x: number;
+    y: number;
+}
+
+const SPOTLIGHT_EYEBROW = {
+    national: "全台價格",
+    county: "縣市價格",
+    district: "鄉鎮市區價格",
+} as const;
 
 function App() {
     const { data: geo, error: geoError, loading: geoLoading } = useTaiwanGeo();
     const { data: shops } = useShops();
-    const [view, setView] = useState<View>({ level: "county" });
-    const [selectedDistrict, setSelectedDistrict] = useState<string | null>(
-        null,
-    );
+    const [view, setView] = useState<MapView>({ level: "county" });
+    const [focusedRegion, setFocusedRegion] = useState<string | null>(null);
+    const [focusAnchor, setFocusAnchor] = useState<Point | null>(null);
     const [hover, setHover] = useState<HoverState | null>(null);
     const [metric, setMetric] = useState<Metric>("unit");
     const [scaleMode, setScaleMode] = useState<ScaleMode>("quantile");
     const panelRef = useRef<HTMLElement>(null);
 
     const factor = METRIC_FACTOR[metric];
+    const isTownView = view.level === "town";
 
-    const statsByCounty = useMemo(() => aggregateByCounty(shops), [shops]);
-    const statsByDistrict = useMemo(
+    const countyStats = useMemo(
+        () => scaleStats(aggregateByCounty(shops), factor),
+        [shops, factor],
+    );
+    const districtStats = useMemo(
         () =>
             view.level === "town"
-                ? aggregateByDistrict(shops, view.county)
-                : new Map<string, RegionStat>(),
-        [shops, view],
+                ? scaleStats(aggregateByDistrict(shops, view.county), factor)
+                : new Map(),
+        [shops, view, factor],
     );
+    const nationalStat = useMemo(() => {
+        const stat = aggregateAll(shops);
+        return stat ? scaleStat(stat, factor) : undefined;
+    }, [shops, factor]);
 
-    const activeStats =
-        view.level === "town" ? statsByDistrict : statsByCounty;
-    const displayStats = useMemo(
-        () => scaleStats(activeStats, factor),
-        [activeStats, factor],
-    );
+    const displayStats = isTownView ? districtStats : countyStats;
     const colorScale = useMemo(
         () =>
             buildColorScale(displayStats, {
@@ -90,27 +103,57 @@ function App() {
         return fills;
     }, [geo, view, colorScale, displayStats]);
 
-    const handleSelectRegion = (name: string) => {
-        if (view.level === "county") {
-            setView({ level: "town", county: name });
-            setSelectedDistrict(null);
-        } else {
-            setSelectedDistrict((current) =>
-                current === name ? null : name,
-            );
-        }
+    const focus = useMemo(
+        () => resolveFocus(view, focusedRegion),
+        [view, focusedRegion],
+    );
+    const scopedShops = useMemo(
+        () => filterShops(shops, focus.shopScope),
+        [shops, focus.shopScope],
+    );
+    const spotlightStat =
+        focus.spotlightLevel === "national"
+            ? nationalStat
+            : focus.spotlightLevel === "county"
+              ? countyStats.get(focus.spotlightName ?? "")
+              : districtStats.get(focus.spotlightName ?? "");
+
+    const toPanelPoint = (point: Point): Point | null => {
+        const panel = panelRef.current;
+        if (!panel) return null;
+        const rect = panel.getBoundingClientRect();
+        return { x: point.x - rect.left, y: point.y - rect.top };
+    };
+
+    const handleSelectRegion = (name: string, point: Point) => {
+        const next = focusedRegion === name ? null : name;
+        setFocusedRegion(next);
+        setFocusAnchor(next ? toPanelPoint(point) : null);
+    };
+
+    const handleClearSelection = () => {
+        setFocusedRegion(null);
+        setFocusAnchor(null);
+    };
+
+    const handleDrill = () => {
+        if (view.level !== "county" || !focusedRegion) return;
+        setView({ level: "town", county: focusedRegion });
+        setFocusedRegion(null);
+        setFocusAnchor(null);
         setHover(null);
     };
 
     const handleBack = () => {
         setView({ level: "county" });
-        setSelectedDistrict(null);
+        setFocusedRegion(null);
+        setFocusAnchor(null);
         setHover(null);
     };
 
     const handleHoverRegion = (
         name: string | null,
-        point: { x: number; y: number } | null,
+        point: Point | null,
     ) => {
         const panel = panelRef.current;
         if (!name || !point || !panel) {
@@ -121,34 +164,21 @@ function App() {
         setHover({ name, x: point.x - rect.left, y: point.y - rect.top });
     };
 
-    const isTownView = view.level === "town";
-    const selectedStat = isTownView && selectedDistrict
-        ? displayStats.get(selectedDistrict)
-        : undefined;
+    useEffect(() => {
+        const onKeyDown = (event: KeyboardEvent) => {
+            if (event.key === "Escape") {
+                setFocusedRegion(null);
+                setFocusAnchor(null);
+            }
+        };
+        window.addEventListener("keydown", onKeyDown);
+        return () => window.removeEventListener("keydown", onKeyDown);
+    }, []);
+
     const unit = METRIC_UNIT[metric];
     const legendTitle = `${isTownView ? "鄉鎮市區" : "縣市"}${
         METRIC_LABEL[metric]
     }（元）`;
-
-    const scopedShops = useMemo(
-        () =>
-            filterShops(
-                shops,
-                view.level === "town"
-                    ? {
-                          level: "town",
-                          county: view.county,
-                          district: selectedDistrict,
-                      }
-                    : { level: "county" },
-            ),
-        [shops, view, selectedDistrict],
-    );
-    const scopeLabel = isTownView
-        ? selectedDistrict
-            ? `${view.county}${selectedDistrict}`
-            : view.county
-        : "全台";
 
     return (
         <div className="app">
@@ -206,13 +236,12 @@ function App() {
                             geo={geo}
                             level={view.level}
                             county={isTownView ? view.county : null}
-                            selectedRegion={
-                                isTownView ? selectedDistrict : null
-                            }
+                            selectedRegion={focusedRegion}
                             hoveredRegion={hover?.name ?? null}
                             fillByRegion={fillByRegion}
                             onSelectRegion={handleSelectRegion}
                             onHoverRegion={handleHoverRegion}
+                            onClearSelection={handleClearSelection}
                         />
                     )}
                     <Legend
@@ -220,7 +249,7 @@ function App() {
                         colors={colorScale.colors}
                         title={legendTitle}
                     />
-                    {hover && (
+                    {hover && hover.name !== focusedRegion && (
                         <MapTooltip
                             x={hover.x}
                             y={hover.y}
@@ -229,56 +258,71 @@ function App() {
                             unit={unit}
                         />
                     )}
+                    {focusedRegion && focusAnchor && (
+                        <MapTooltip
+                            x={focusAnchor.x}
+                            y={focusAnchor.y}
+                            name={focusedRegion}
+                            stat={displayStats.get(focusedRegion)}
+                            unit={unit}
+                            action={
+                                isTownView
+                                    ? undefined
+                                    : {
+                                          label: "查看鄉鎮市區",
+                                          onClick: handleDrill,
+                                      }
+                            }
+                        />
+                    )}
                 </section>
 
                 <section className="spotlight" aria-live="polite">
                     <div className="spotlight__meta">
                         <p className="spotlight__eyebrow">
-                            {isTownView ? "鄉鎮市區" : "縣市"}價格
+                            {SPOTLIGHT_EYEBROW[focus.spotlightLevel]}
                         </p>
                         <h2 className="spotlight__title">
-                            {isTownView
-                                ? selectedDistrict ?? view.county
-                                : "全台"}
+                            {focus.spotlightName ?? "全台"}
                         </h2>
                     </div>
-                    {selectedStat ? (
+                    {spotlightStat ? (
                         <dl className="spotlight__stats">
                             <div className="spotlight__stat">
                                 <dt>平均</dt>
                                 <dd>
-                                    {selectedStat.avg.toFixed(1)}
+                                    {spotlightStat.avg.toFixed(1)}
                                     <span>{unit}</span>
                                 </dd>
                             </div>
                             <div className="spotlight__stat">
                                 <dt>中位數</dt>
                                 <dd>
-                                    {selectedStat.median.toFixed(1)}
+                                    {spotlightStat.median.toFixed(1)}
                                     <span>{unit}</span>
                                 </dd>
                             </div>
                             <div className="spotlight__stat">
                                 <dt>樣本</dt>
                                 <dd>
-                                    {selectedStat.sampleCount}
+                                    {spotlightStat.sampleCount}
                                     <span>間</span>
                                 </dd>
                             </div>
                         </dl>
                     ) : (
                         <p className="spotlight__hint">
-                            {isTownView
-                                ? "點選鄉鎮市區，查看平均、中位數與樣本數。"
-                                : "點選任一縣市，鑽取查看鄉鎮市區的價格分布。"}
+                            {focus.spotlightLevel === "national"
+                                ? "目前尚無店家資料。"
+                                : "此區尚無店家資料。"}
                         </p>
                     )}
                 </section>
 
                 <ShopList
                     shops={scopedShops}
-                    scopeLabel={scopeLabel}
-                    showCounty={!isTownView}
+                    scopeLabel={focus.scopeLabel}
+                    showCounty={focus.showCounty}
                     factor={factor}
                     compareLabel={METRIC_LABEL[metric]}
                     compareUnit={METRIC_UNIT[metric]}

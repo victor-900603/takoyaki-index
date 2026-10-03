@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { unitPrice, type PriceRecord, type Shop } from "./shops";
-import { aggregateByCounty, aggregateByDistrict } from "./stats";
+import {
+    aggregateAll,
+    aggregateByCounty,
+    aggregateByDistrict,
+} from "./stats";
 
 function record(
     box_price: number,
@@ -163,5 +167,28 @@ describe("aggregateByDistrict", () => {
     it("無價格紀錄的店家不列入統計", () => {
         const shops = [shop("台北市", [], "a", "信義區")];
         expect(aggregateByDistrict(shops, "台北市").has("信義區")).toBe(false);
+    });
+});
+
+describe("aggregateAll", () => {
+    it("不分地區統計全部店家", () => {
+        const shops = [
+            shop("台北市", [record(60)], "a"),
+            shop("高雄市", [record(72)], "b"),
+            shop("台中市", [record(84)], "c"),
+        ];
+
+        expect(aggregateAll(shops)).toEqual({
+            avg: 12,
+            median: 12,
+            sampleCount: 3,
+            min: 10,
+            max: 14,
+        });
+    });
+
+    it("無店家或皆無價格時回傳 undefined", () => {
+        expect(aggregateAll([])).toBeUndefined();
+        expect(aggregateAll([shop("台南市", [], "a")])).toBeUndefined();
     });
 });

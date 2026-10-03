@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { METRIC_FACTOR, scaleStats } from "./metric";
+import { METRIC_FACTOR, scaleStat, scaleStats } from "./metric";
 import type { RegionStat } from "./stats";
 
 describe("scaleStats", () => {
@@ -40,5 +40,25 @@ describe("scaleStats", () => {
 
         scaleStats(stats, METRIC_FACTOR.box6);
         expect(stats.get("台中市")?.avg).toBe(11);
+    });
+});
+
+describe("scaleStat", () => {
+    it("以係數換算單筆統計，樣本數不變", () => {
+        const stat: RegionStat = {
+            avg: 11,
+            median: 10,
+            sampleCount: 4,
+            min: 9,
+            max: 13,
+        };
+
+        expect(scaleStat(stat, METRIC_FACTOR.box6)).toEqual({
+            avg: 66,
+            median: 60,
+            sampleCount: 4,
+            min: 54,
+            max: 78,
+        });
     });
 });

@@ -39,8 +39,9 @@ interface TaiwanMapProps {
     selectedRegion: string | null;
     hoveredRegion: string | null;
     fillByRegion: Map<string, string>;
-    onSelectRegion: (name: string) => void;
+    onSelectRegion: (name: string, point: HoverPoint) => void;
     onHoverRegion: (name: string | null, point: HoverPoint | null) => void;
+    onClearSelection: () => void;
 }
 
 interface InsetView {
@@ -139,8 +140,13 @@ interface RegionProps {
     d: string;
     fill: string | undefined;
     isSelected: boolean;
-    onSelectRegion: (name: string) => void;
+    onSelectRegion: (name: string, point: HoverPoint) => void;
     onHoverRegion: (name: string | null, point: HoverPoint | null) => void;
+}
+
+function centerOf(element: Element): HoverPoint {
+    const rect = element.getBoundingClientRect();
+    return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
 }
 
 function Region({
@@ -160,7 +166,10 @@ function Region({
             role="button"
             aria-label={`${name}${isSelected ? "（已選取）" : ""}`}
             aria-pressed={isSelected}
-            onClick={() => onSelectRegion(name)}
+            onClick={(event) => {
+                event.stopPropagation();
+                onSelectRegion(name, centerOf(event.currentTarget));
+            }}
             onMouseEnter={(event) =>
                 onHoverRegion(name, {
                     x: event.clientX,
@@ -177,7 +186,8 @@ function Region({
             onKeyDown={(event) => {
                 if (event.key === "Enter" || event.key === " ") {
                     event.preventDefault();
-                    onSelectRegion(name);
+                    event.stopPropagation();
+                    onSelectRegion(name, centerOf(event.currentTarget));
                 }
             }}
         >
@@ -195,6 +205,7 @@ export default function TaiwanMap({
     fillByRegion,
     onSelectRegion,
     onHoverRegion,
+    onClearSelection,
 }: TaiwanMapProps) {
     const countyView = useMemo(
         () => computeView(geo, "county", null),
@@ -225,6 +236,7 @@ export default function TaiwanMap({
             className="taiwan-map"
             role="img"
             aria-label={label}
+            onClick={onClearSelection}
         >
             {regions.map(({ name, d }) => (
                 <Region
