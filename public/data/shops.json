@@ -1,0 +1,318 @@
+[
+    {
+        "place_id": "fake-001",
+        "name": "章魚燒 中山店",
+        "county": "台北市",
+        "district": "中山區",
+        "prices": [
+            { "box_price": 54, "pieces_per_box": 6, "observed_at": "2026-03-01", "source": "fake" },
+            { "box_price": 60, "pieces_per_box": 6, "observed_at": "2026-09-20", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-002",
+        "name": "章魚燒 大安店",
+        "county": "台北市",
+        "district": "大安區",
+        "prices": [
+            { "box_price": 66, "pieces_per_box": 6, "observed_at": "2026-09-18", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-003",
+        "name": "章魚燒 士林店",
+        "county": "台北市",
+        "district": "士林區",
+        "prices": [
+            { "box_price": 72, "pieces_per_box": 6, "observed_at": "2026-09-15", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-004",
+        "name": "章魚燒 信義店",
+        "county": "台北市",
+        "district": "信義區",
+        "prices": [
+            { "box_price": 75, "pieces_per_box": 6, "observed_at": "2026-09-12", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-005",
+        "name": "章魚燒 板橋店",
+        "county": "新北市",
+        "district": "板橋區",
+        "prices": [
+            { "box_price": 55, "pieces_per_box": 6, "observed_at": "2026-09-10", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-006",
+        "name": "章魚燒 中和店",
+        "county": "新北市",
+        "district": "中和區",
+        "prices": [
+            { "box_price": 60, "pieces_per_box": 6, "observed_at": "2026-09-09", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-007",
+        "name": "章魚燒 三重店",
+        "county": "新北市",
+        "district": "三重區",
+        "prices": [
+            { "box_price": 50, "pieces_per_box": 6, "observed_at": "2026-09-08", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-008",
+        "name": "章魚燒 桃園店",
+        "county": "桃園市",
+        "district": "桃園區",
+        "prices": [
+            { "box_price": 55, "pieces_per_box": 6, "observed_at": "2026-09-07", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-009",
+        "name": "章魚燒 中壢店",
+        "county": "桃園市",
+        "district": "中壢區",
+        "prices": [
+            { "box_price": 60, "pieces_per_box": 6, "observed_at": "2026-09-06", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-010",
+        "name": "章魚燒 平鎮店",
+        "county": "桃園市",
+        "district": "平鎮區",
+        "prices": [
+            { "box_price": 48, "pieces_per_box": 6, "observed_at": "2026-09-05", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-011",
+        "name": "章魚燒 西屯店",
+        "county": "台中市",
+        "district": "西屯區",
+        "prices": [
+            { "box_price": 60, "pieces_per_box": 6, "observed_at": "2026-09-04", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-012",
+        "name": "章魚燒 北區店",
+        "county": "台中市",
+        "district": "北區",
+        "prices": [
+            { "box_price": 55, "pieces_per_box": 6, "observed_at": "2026-09-03", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-013",
+        "name": "章魚燒 南屯店",
+        "county": "台中市",
+        "district": "南屯區",
+        "prices": [
+            { "box_price": 80, "pieces_per_box": 8, "observed_at": "2026-09-02", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-014",
+        "name": "章魚燒 豐原店",
+        "county": "台中市",
+        "district": "豐原區",
+        "prices": [
+            { "box_price": 45, "pieces_per_box": 6, "observed_at": "2026-09-01", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-015",
+        "name": "章魚燒 中西店",
+        "county": "台南市",
+        "district": "中西區",
+        "prices": [
+            { "box_price": 50, "pieces_per_box": 6, "observed_at": "2026-08-30", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-016",
+        "name": "章魚燒 東區店",
+        "county": "台南市",
+        "district": "東區",
+        "prices": [
+            { "box_price": 55, "pieces_per_box": 6, "observed_at": "2026-08-29", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-017",
+        "name": "章魚燒 安平店",
+        "county": "台南市",
+        "district": "安平區",
+        "prices": [
+            { "box_price": 60, "pieces_per_box": 6, "observed_at": "2026-08-28", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-018",
+        "name": "章魚燒 苓雅店",
+        "county": "高雄市",
+        "district": "苓雅區",
+        "prices": [
+            { "box_price": 50, "pieces_per_box": 6, "observed_at": "2026-08-27", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-019",
+        "name": "章魚燒 三民店",
+        "county": "高雄市",
+        "district": "三民區",
+        "prices": [
+            { "box_price": 55, "pieces_per_box": 6, "observed_at": "2026-08-26", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-020",
+        "name": "章魚燒 鳳山店",
+        "county": "高雄市",
+        "district": "鳳山區",
+        "prices": [
+            { "box_price": 45, "pieces_per_box": 6, "observed_at": "2026-08-25", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-021",
+        "name": "章魚燒 新竹東區店",
+        "county": "新竹市",
+        "district": "東區",
+        "prices": [
+            { "box_price": 60, "pieces_per_box": 6, "observed_at": "2026-08-24", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-022",
+        "name": "章魚燒 新竹北區店",
+        "county": "新竹市",
+        "district": "北區",
+        "prices": [
+            { "box_price": 55, "pieces_per_box": 6, "observed_at": "2026-08-23", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-023",
+        "name": "章魚燒 基隆店",
+        "county": "基隆市",
+        "district": "仁愛區",
+        "prices": [
+            { "box_price": 60, "pieces_per_box": 6, "observed_at": "2026-08-22", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-024",
+        "name": "章魚燒 宜蘭店",
+        "county": "宜蘭縣",
+        "district": "宜蘭市",
+        "prices": [
+            { "box_price": 55, "pieces_per_box": 6, "observed_at": "2026-08-21", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-025",
+        "name": "章魚燒 羅東店",
+        "county": "宜蘭縣",
+        "district": "羅東鎮",
+        "prices": [
+            { "box_price": 50, "pieces_per_box": 6, "observed_at": "2026-08-20", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-026",
+        "name": "章魚燒 彰化店",
+        "county": "彰化縣",
+        "district": "彰化市",
+        "prices": [
+            { "box_price": 50, "pieces_per_box": 6, "observed_at": "2026-08-19", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-027",
+        "name": "章魚燒 員林店",
+        "county": "彰化縣",
+        "district": "員林市",
+        "prices": [
+            { "box_price": 55, "pieces_per_box": 6, "observed_at": "2026-08-18", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-028",
+        "name": "章魚燒 鹿港店",
+        "county": "彰化縣",
+        "district": "鹿港鎮",
+        "prices": [
+            { "box_price": 45, "pieces_per_box": 6, "observed_at": "2026-08-17", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-029",
+        "name": "章魚燒 花蓮店",
+        "county": "花蓮縣",
+        "district": "花蓮市",
+        "prices": [
+            { "box_price": 60, "pieces_per_box": 6, "observed_at": "2026-08-16", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-030",
+        "name": "章魚燒 吉安店",
+        "county": "花蓮縣",
+        "district": "吉安鄉",
+        "prices": [
+            { "box_price": 55, "pieces_per_box": 6, "observed_at": "2026-08-15", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-031",
+        "name": "章魚燒 玉里店",
+        "county": "花蓮縣",
+        "district": "玉里鎮",
+        "prices": [
+            { "box_price": 50, "pieces_per_box": 6, "observed_at": "2026-08-14", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-032",
+        "name": "章魚燒 台東店",
+        "county": "台東縣",
+        "district": "台東市",
+        "prices": [
+            { "box_price": 55, "pieces_per_box": 6, "observed_at": "2026-08-13", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-033",
+        "name": "章魚燒 屏東店",
+        "county": "屏東縣",
+        "district": "屏東市",
+        "prices": [
+            { "box_price": 50, "pieces_per_box": 6, "observed_at": "2026-08-12", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-034",
+        "name": "章魚燒 潮州店",
+        "county": "屏東縣",
+        "district": "潮州鎮",
+        "prices": [
+            { "box_price": 45, "pieces_per_box": 6, "observed_at": "2026-08-11", "source": "fake" }
+        ]
+    },
+    {
+        "place_id": "fake-035",
+        "name": "章魚燒 嘉義店",
+        "county": "嘉義市",
+        "district": "東區",
+        "prices": [
+            { "box_price": 55, "pieces_per_box": 6, "observed_at": "2026-08-10", "source": "fake" }
+        ]
+    }
+]

@@ -27,6 +27,7 @@
 }
 
 .map-panel {
+    position: relative;
     background: var(--panel);
     border: 1px solid var(--border);
     border-radius: 16px;
@@ -59,7 +60,7 @@
 }
 
 .taiwan-map__county {
-    fill: #e7ded0;
+    fill: var(--county-fill, #e7ded0);
     cursor: pointer;
     outline: none;
     transition: fill 0.1s ease;
@@ -91,6 +92,88 @@
 .info-panel h2 {
     font-size: 18px;
     margin-bottom: 12px;
+}
+
+.info-panel__stats {
+    margin: 12px 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.info-panel__stats > div {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+}
+
+.info-panel__stats dt {
+    color: #8a7f6f;
+}
+
+.info-panel__stats dd {
+    margin: 0;
+    font-weight: 600;
+    color: var(--text-h);
+}
+
+.map-tooltip {
+    position: absolute;
+    z-index: 2;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 132px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: rgba(36, 29, 20, 0.92);
+    color: #fbf7f0;
+    font-size: 12px;
+    line-height: 1.4;
+    transform: translate(14px, 14px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+}
+
+.map-tooltip__name {
+    font-size: 13px;
+    margin-bottom: 2px;
+}
+
+.legend {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}
+
+.legend__title {
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.legend__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.legend__item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text);
+}
+
+.legend__swatch {
+    width: 18px;
+    height: 12px;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+    flex-shrink: 0;
 }
 
 @media (max-width: 820px) {
