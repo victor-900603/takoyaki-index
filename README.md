@@ -43,12 +43,29 @@
 npm ci                # 安裝相依
 npm run dev           # 啟動開發伺服器
 npm run data:build    # 由 data/raw/shops.json 產生 public/data/shops.json
+npm run data:add      # 手動新增一家店（見下方說明）
 npm run data:report   # 解析 Issue 內容並併入真實來源
 npm run test          # 執行單元測試
 npm run lint          # 靜態檢查
 npm run build         # 型別檢查並建置
 npm run preview       # 預覽建置結果
 ```
+
+### 本機新增店家
+
+沒有 Google Places API key 也能建檔：在 Google Maps 找到店家後複製連結，執行：
+
+```bash
+npm run data:add -- "店名" "<Google Maps 連結>" 盒價 [每盒顆數] [觀測日期]
+```
+
+例如：
+
+```bash
+npm run data:add -- "章魚燒專賣店" "https://maps.app.goo.gl/xxxx" 60 6 2026-10-01
+```
+
+連結可貼 Google Maps 分享的短網址，系統會自動解出座標、判定行政區並併入 `data/raw/shops.json`；顆數預設 6、日期預設當天。可用環境變數 `ADD_SOURCE` 標記來源、`ADD_RAW_PATH` 指定其他來源檔。
 
 主要目錄：
 

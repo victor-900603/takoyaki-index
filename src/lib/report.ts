@@ -116,7 +116,7 @@ export function buildShop(
     fields: ReportFields,
     ref: MapRef,
     town: TownFeature,
-    issueNumber: number,
+    source: string,
 ): Shop {
     return {
         place_id: ref.id,
@@ -128,7 +128,7 @@ export function buildShop(
                 box_price: Number(fields.boxPrice),
                 pieces_per_box: Number(fields.piecesPerBox),
                 observed_at: fields.observedAt,
-                source: `github-issue#${issueNumber}`,
+                source,
             },
         ],
     };

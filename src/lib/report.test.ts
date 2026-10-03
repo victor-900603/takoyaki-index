@@ -128,7 +128,7 @@ describe("buildShop", () => {
             fields,
             { id: "0x1:0x2", lat: 25.033, lng: 121.5654 },
             town,
-            42,
+            "github-issue#42",
         );
         expect(shop).toEqual({
             place_id: "0x1:0x2",
