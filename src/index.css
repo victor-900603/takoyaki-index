@@ -1,16 +1,24 @@
 :root {
-    --text: #4a4238;
-    --text-h: #241d14;
-    --bg: #fbf7f0;
-    --panel: #ffffff;
-    --border: #e7ded0;
-    --accent: #e0653a;
+    --paper: #f5efe3;
+    --paper-2: #ece2d0;
+    --card: #fffdf8;
+    --ink: #2a221a;
+    --ink-2: #746657;
+    --line: #e6dbc7;
+    --accent: #d8452a;
 
-    --sans: system-ui, "Segoe UI", "Noto Sans TC", Roboto, sans-serif;
+    --sans: "Noto Sans TC", system-ui, "Segoe UI", Roboto, sans-serif;
+    --serif: "Noto Serif TC", "Songti TC", "Noto Serif", serif;
 
-    font: 16px/1.6 var(--sans);
-    color: var(--text);
-    background: var(--bg);
+    font: 16px/1.65 var(--sans);
+    color: var(--ink);
+    background-color: var(--paper);
+    background-image: radial-gradient(
+        120% 70% at 50% -8%,
+        #fdf8ec 0%,
+        rgba(253, 248, 236, 0) 60%
+    );
+    background-attachment: fixed;
     font-synthesis: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
@@ -27,11 +35,31 @@ body {
 
 h1,
 h2 {
-    color: var(--text-h);
+    color: var(--ink);
+    font-family: var(--serif);
     font-weight: 700;
     margin: 0;
 }
 
 p {
     margin: 0;
+}
+
+:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+::selection {
+    background: var(--accent);
+    color: #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        transition-duration: 0.001ms !important;
+        animation-duration: 0.001ms !important;
+    }
 }

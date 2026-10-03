@@ -130,15 +130,26 @@ function App() {
 
     return (
         <div className="app">
-            <header className="app__header">
-                <h1>台灣章魚燒價格指數</h1>
-                <p className="app__subtitle">
-                    用一張地圖，看看全台章魚燒哪裡買最划算。
-                </p>
+            <header className="masthead">
+                <div className="masthead__lead">
+                    <p className="masthead__eyebrow">
+                        全台 22 縣市・368 鄉鎮市區
+                    </p>
+                    <h1 className="masthead__title">台灣章魚燒價格指數</h1>
+                    <p className="masthead__subtitle">
+                        用一張地圖，看看全台章魚燒哪裡買最划算。
+                    </p>
+                </div>
+                <ViewControls
+                    metric={metric}
+                    onMetricChange={setMetric}
+                    scaleMode={scaleMode}
+                    onScaleModeChange={setScaleMode}
+                />
             </header>
 
-            <main className="app__main">
-                <section className="map-panel" ref={panelRef}>
+            <main>
+                <section className="map-stage" ref={panelRef}>
                     {isTownView && (
                         <div className="map-nav">
                             <button
@@ -160,17 +171,11 @@ function App() {
                             </nav>
                         </div>
                     )}
-                    <ViewControls
-                        metric={metric}
-                        onMetricChange={setMetric}
-                        scaleMode={scaleMode}
-                        onScaleModeChange={setScaleMode}
-                    />
                     {geoLoading && (
-                        <p className="map-panel__status">地圖載入中…</p>
+                        <p className="map-stage__status">地圖載入中…</p>
                     )}
                     {geoError && (
-                        <p className="map-panel__status map-panel__status--error">
+                        <p className="map-stage__status map-stage__status--error">
                             {geoError}
                         </p>
                     )}
@@ -203,37 +208,56 @@ function App() {
                     )}
                 </section>
 
-                <aside className="info-panel">
-                    <h2>{isTownView ? view.county : "縣市"}</h2>
-                    <p>
-                        {isTownView
-                            ? selectedDistrict
-                                ? `已選取：${selectedDistrict}`
-                                : "點擊地圖上的鄉鎮市區查看統計。"
-                            : "點擊地圖上的縣市查看鄉鎮市區。"}
-                    </p>
-                    {selectedStat && (
-                        <dl className="info-panel__stats">
-                            <div>
+                <section className="spotlight" aria-live="polite">
+                    <div className="spotlight__meta">
+                        <p className="spotlight__eyebrow">
+                            {isTownView ? "鄉鎮市區" : "縣市"}價格
+                        </p>
+                        <h2 className="spotlight__title">
+                            {isTownView
+                                ? selectedDistrict ?? view.county
+                                : "全台"}
+                        </h2>
+                    </div>
+                    {selectedStat ? (
+                        <dl className="spotlight__stats">
+                            <div className="spotlight__stat">
                                 <dt>平均</dt>
                                 <dd>
-                                    {selectedStat.avg.toFixed(1)} {unit}
+                                    {selectedStat.avg.toFixed(1)}
+                                    <span>{unit}</span>
                                 </dd>
                             </div>
-                            <div>
+                            <div className="spotlight__stat">
                                 <dt>中位數</dt>
                                 <dd>
-                                    {selectedStat.median.toFixed(1)} {unit}
+                                    {selectedStat.median.toFixed(1)}
+                                    <span>{unit}</span>
                                 </dd>
                             </div>
-                            <div>
+                            <div className="spotlight__stat">
                                 <dt>樣本</dt>
-                                <dd>{selectedStat.sampleCount} 間</dd>
+                                <dd>
+                                    {selectedStat.sampleCount}
+                                    <span>間</span>
+                                </dd>
                             </div>
                         </dl>
+                    ) : (
+                        <p className="spotlight__hint">
+                            {isTownView
+                                ? "點選鄉鎮市區，查看平均、中位數與樣本數。"
+                                : "點選任一縣市，鑽取查看鄉鎮市區的價格分布。"}
+                        </p>
                     )}
-                </aside>
+                </section>
             </main>
+
+            <footer className="app__footer">
+                <p>
+                    價格以每間店最新一筆觀測為準；樣本少於 3 間以灰色呈現，避免小樣本誤導。
+                </p>
+            </footer>
         </div>
     );
 }

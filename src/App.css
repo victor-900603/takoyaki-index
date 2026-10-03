@@ -1,158 +1,72 @@
 .app {
-    max-width: 1040px;
+    max-width: 940px;
     margin: 0 auto;
-    padding: 40px 24px 64px;
+    padding: 48px 28px 72px;
     box-sizing: border-box;
 }
 
-.app__header {
+/* Masthead */
+.masthead {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 32px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid var(--ink);
     margin-bottom: 28px;
 }
 
-.app__header h1 {
-    font-size: 34px;
-    letter-spacing: -0.6px;
-}
-
-.app__subtitle {
-    margin-top: 8px;
-    color: var(--text);
-}
-
-.app__main {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 280px;
-    gap: 24px;
-    align-items: start;
-}
-
-.map-panel {
-    position: relative;
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 16px;
-    display: flex;
-    justify-content: center;
-    min-height: 420px;
-}
-
-.map-panel__status {
-    align-self: center;
-    color: var(--text);
-}
-
-.map-panel__status--error {
-    color: #b3261e;
-}
-
-.taiwan-map {
-    width: 100%;
-    max-width: 460px;
-    height: auto;
-    display: block;
-}
-
-.taiwan-map__nation {
-    fill: #f2ece1;
-    stroke: var(--border);
-    stroke-width: 1;
-}
-
-.taiwan-map__region {
-    fill: var(--region-fill, #e7ded0);
-    cursor: pointer;
-    outline: none;
-    transition: fill 0.1s ease;
-}
-
-.taiwan-map__region:hover,
-.taiwan-map__region:focus-visible {
-    fill: #d8c3a0;
-    stroke: var(--accent);
-    stroke-width: 1.2;
-}
-
-.taiwan-map__region.is-selected {
-    fill: var(--accent);
-}
-
-.taiwan-map__region.is-selected:hover,
-.taiwan-map__region.is-selected:focus-visible {
-    fill: var(--accent);
-}
-
-.map-nav {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    z-index: 3;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.map-nav__back {
-    padding: 6px 12px;
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    background: var(--panel);
-    color: var(--text-h);
-    font: inherit;
-    font-size: 13px;
-    cursor: pointer;
-}
-
-.map-nav__back:hover,
-.map-nav__back:focus-visible {
-    border-color: var(--accent);
+.masthead__eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.28em;
     color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 12px;
 }
 
-.map-nav__crumb {
-    display: flex;
-    gap: 6px;
-    font-size: 13px;
-    color: var(--text);
+.masthead__title {
+    font-family: var(--serif);
+    font-size: clamp(30px, 4.6vw, 44px);
+    font-weight: 900;
+    letter-spacing: 0.01em;
+    line-height: 1.14;
 }
 
-.map-nav__current {
-    font-weight: 600;
-    color: var(--text-h);
+.masthead__subtitle {
+    margin-top: 12px;
+    color: var(--ink-2);
+    font-size: 15px;
+    max-width: 32em;
 }
 
+/* Controls */
 .view-controls {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    z-index: 3;
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    gap: 6px;
+    gap: 8px;
+    flex-shrink: 0;
 }
 
 .view-controls__group {
     display: inline-flex;
-    border: 1px solid var(--border);
+    padding: 3px;
+    border: 1.5px solid var(--ink);
     border-radius: 999px;
-    overflow: hidden;
-    background: var(--panel);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    background: var(--card);
 }
 
 .view-controls__button {
     border: 0;
     background: transparent;
-    color: var(--text-h);
+    color: var(--ink);
     font: inherit;
-    font-size: 12px;
-    padding: 5px 10px;
+    font-size: 12.5px;
+    font-weight: 500;
+    padding: 6px 13px;
+    border-radius: 999px;
     cursor: pointer;
-}
-
-.view-controls__button + .view-controls__button {
-    border-left: 1px solid var(--border);
+    transition: background 0.15s ease, color 0.15s ease;
 }
 
 .view-controls__button:not(.is-active):hover,
@@ -165,109 +79,152 @@
     color: #fff;
 }
 
-.info-panel {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 20px;
-}
-
-.info-panel h2 {
-    font-size: 18px;
-    margin-bottom: 12px;
-}
-
-.info-panel__stats {
-    margin: 12px 0 0;
+/* Map stage */
+.map-stage {
+    position: relative;
     display: flex;
-    flex-direction: column;
-    gap: 6px;
+    justify-content: center;
+    padding: 28px;
+    border: 1px solid var(--line);
+    border-radius: 26px;
+    background: linear-gradient(180deg, #fffdf8 0%, #fbf5ea 100%);
+    box-shadow: 0 28px 56px -36px rgba(74, 58, 40, 0.5);
+    overflow: hidden;
 }
 
-.info-panel__stats > div {
-    display: flex;
-    justify-content: space-between;
-    font-size: 13px;
+.map-stage__status {
+    align-self: center;
+    color: var(--ink-2);
 }
 
-.info-panel__stats dt {
-    color: #8a7f6f;
+.map-stage__status--error {
+    color: var(--accent);
 }
 
-.info-panel__stats dd {
-    margin: 0;
-    font-weight: 600;
-    color: var(--text-h);
+.taiwan-map {
+    width: 100%;
+    max-width: 470px;
+    height: auto;
+    display: block;
 }
 
-.map-tooltip {
+.taiwan-map__nation {
+    fill: #efe6d5;
+    stroke: #e0d5c1;
+    stroke-width: 1;
+}
+
+.taiwan-map__region {
+    fill: var(--region-fill, #e0d7c6);
+    stroke: #fffdf8;
+    stroke-width: 0.7;
+    cursor: pointer;
+    outline: none;
+    transition: filter 0.12s ease, stroke 0.12s ease;
+}
+
+.taiwan-map__region:hover,
+.taiwan-map__region:focus-visible {
+    filter: brightness(0.94) saturate(1.08);
+    stroke: var(--ink);
+    stroke-width: 1;
+}
+
+.taiwan-map__region.is-selected {
+    stroke: var(--accent);
+    stroke-width: 2.2;
+    filter: drop-shadow(0 2px 5px rgba(216, 69, 42, 0.45));
+}
+
+/* Breadcrumb / back */
+.map-nav {
     position: absolute;
-    z-index: 2;
-    pointer-events: none;
+    top: 20px;
+    left: 20px;
+    z-index: 3;
     display: flex;
-    flex-direction: column;
-    gap: 2px;
-    min-width: 132px;
-    padding: 8px 10px;
-    border-radius: 10px;
-    background: rgba(36, 29, 20, 0.92);
-    color: #fbf7f0;
-    font-size: 12px;
-    line-height: 1.4;
-    transform: translate(14px, 14px);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+    align-items: center;
+    gap: 12px;
 }
 
-.map-tooltip__name {
-    font-size: 13px;
-    margin-bottom: 2px;
+.map-nav__back {
+    padding: 7px 15px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: rgba(255, 253, 248, 0.92);
+    color: var(--ink);
+    font: inherit;
+    font-size: 12.5px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease;
 }
 
+.map-nav__back:hover,
+.map-nav__back:focus-visible {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.map-nav__crumb {
+    display: flex;
+    gap: 7px;
+    font-size: 12.5px;
+    color: var(--ink-2);
+}
+
+.map-nav__current {
+    font-weight: 700;
+    color: var(--ink);
+}
+
+/* Legend */
 .legend {
     position: absolute;
-    left: 12px;
-    bottom: 12px;
+    left: 20px;
+    bottom: 20px;
     z-index: 3;
     width: max-content;
-    max-width: calc(100% - 24px);
-    padding: 8px 10px;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.92);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    max-width: calc(100% - 40px);
+    padding: 11px 13px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: rgba(255, 253, 248, 0.92);
+    color: var(--ink);
 }
 
 .legend__title {
     font-size: 11px;
-    margin-bottom: 5px;
-    color: var(--text-h);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+    color: var(--ink);
 }
 
 .legend__scale {
     position: relative;
-    width: 186px;
+    width: 190px;
 }
 
 .legend__bar {
     display: flex;
     overflow: hidden;
-    border: 1px solid var(--border);
-    border-radius: 3px;
+    border-radius: 4px;
 }
 
 .legend__band {
     flex: 1;
-    height: 10px;
+    height: 11px;
 }
 
 .legend__band:not(:last-child) {
-    border-right: 1px solid rgba(255, 255, 255, 0.75);
+    border-right: 1px solid rgba(255, 255, 255, 0.85);
 }
 
 .legend__ticks {
     position: relative;
-    height: 15px;
-    margin-top: 3px;
+    height: 16px;
+    margin-top: 4px;
 }
 
 .legend__tick {
@@ -281,24 +238,25 @@
 
 .legend__tick-mark {
     width: 1px;
-    height: 3px;
-    background: var(--border);
+    height: 4px;
+    background: var(--line);
 }
 
 .legend__tick-label {
-    font-size: 9px;
-    line-height: 1.1;
-    color: var(--text);
+    font-size: 9.5px;
+    line-height: 1.2;
+    color: var(--ink-2);
     white-space: nowrap;
+    font-variant-numeric: tabular-nums;
 }
 
 .legend__extras {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 6px;
-    font-size: 9px;
-    color: var(--text);
+    gap: 10px;
+    margin-top: 8px;
+    font-size: 9.5px;
+    color: var(--ink-2);
 }
 
 .legend__extra {
@@ -309,18 +267,175 @@
 
 .legend__swatch {
     width: 14px;
-    height: 10px;
+    height: 11px;
     border-radius: 3px;
-    border: 1px solid var(--border);
+    border: 1px solid var(--line);
     flex-shrink: 0;
 }
 
-@media (max-width: 820px) {
+/* Tooltip */
+.map-tooltip {
+    position: absolute;
+    z-index: 4;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 140px;
+    padding: 9px 11px;
+    border-radius: 12px;
+    background: var(--ink);
+    color: #f7f1e6;
+    font-size: 12px;
+    line-height: 1.45;
+    font-variant-numeric: tabular-nums;
+    transform: translate(16px, 16px);
+    box-shadow: 0 12px 28px rgba(42, 34, 26, 0.3);
+}
+
+.map-tooltip__name {
+    font-family: var(--serif);
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 3px;
+}
+
+/* Spotlight */
+.spotlight {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    margin-top: 24px;
+    padding: 24px 28px;
+    border: 1.5px solid var(--ink);
+    border-radius: 20px;
+    background: var(--card);
+}
+
+.spotlight__meta {
+    flex-shrink: 0;
+    min-width: 148px;
+}
+
+.spotlight__eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.spotlight__title {
+    font-family: var(--serif);
+    font-size: 26px;
+    font-weight: 700;
+}
+
+.spotlight__hint {
+    color: var(--ink-2);
+    font-size: 14px;
+}
+
+.spotlight__stats {
+    display: flex;
+    flex: 1;
+    margin: 0;
+}
+
+.spotlight__stat {
+    flex: 1;
+    padding: 0 24px;
+    border-left: 1px solid var(--line);
+}
+
+.spotlight__stat:first-child {
+    padding-left: 0;
+    border-left: 0;
+}
+
+.spotlight__stat dt {
+    font-size: 12px;
+    color: var(--ink-2);
+    margin-bottom: 6px;
+}
+
+.spotlight__stat dd {
+    margin: 0;
+    font-family: var(--serif);
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+.spotlight__stat dd span {
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-2);
+    margin-left: 6px;
+}
+
+/* Footer */
+.app__footer {
+    margin-top: 28px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    color: var(--ink-2);
+    font-size: 12.5px;
+}
+
+@media (max-width: 760px) {
     .app {
-        padding: 24px 16px 48px;
+        padding: 32px 18px 56px;
     }
 
-    .app__main {
-        grid-template-columns: minmax(0, 1fr);
+    .masthead {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 18px;
+    }
+
+    .view-controls {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: flex-start;
+    }
+
+    .map-stage {
+        padding: 16px;
+        border-radius: 20px;
+    }
+
+    .map-nav {
+        top: 14px;
+        left: 14px;
+    }
+
+    .legend {
+        left: 14px;
+        bottom: 14px;
+    }
+
+    .spotlight {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 18px;
+        padding: 20px;
+    }
+
+    .spotlight__stats {
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .spotlight__stat {
+        padding: 0;
+        border-left: 0;
+    }
+
+    .spotlight__stat dd {
+        font-size: 27px;
     }
 }

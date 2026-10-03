@@ -1,16 +1,16 @@
 import { scaleQuantile, scaleThreshold } from "d3-scale";
 import type { RegionStat } from "./stats";
 
-export const NO_DATA_COLOR = "#d9d2c6";
-export const LOW_SAMPLE_COLOR = "#c2b8a6";
+export const NO_DATA_COLOR = "#e0d7c6";
+export const LOW_SAMPLE_COLOR = "#c9bfae";
 export const MIN_SAMPLE = 3;
 
 export const LEVEL_COLORS = [
-    "#f6e6c9",
-    "#f0cf94",
-    "#e8b25f",
-    "#d98b3a",
-    "#b96520",
+    "#fbe7c2",
+    "#f4cd8a",
+    "#e7ab4e",
+    "#cd7f2a",
+    "#a9581b",
 ] as const;
 
 export const DEFAULT_FIXED_BREAKS = [8, 10, 12, 15];
