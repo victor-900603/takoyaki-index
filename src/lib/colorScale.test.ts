@@ -9,8 +9,14 @@ import {
 } from "./colorScale";
 import type { RegionStat } from "./stats";
 
-function stat(avg: number, sampleCount = MIN_SAMPLE): RegionStat {
-    return { avg, median: avg, sampleCount };
+function stat(value: number, sampleCount = MIN_SAMPLE): RegionStat {
+    return {
+        avg: value,
+        median: value,
+        sampleCount,
+        min: value,
+        max: value,
+    };
 }
 
 const sampleStats = new Map<string, RegionStat>([
@@ -38,12 +44,40 @@ describe("buildColorScale 分位模式", () => {
         expect(scale.colorFor(stat(12))).toBe(LEVEL_COLORS[4]);
     });
 
-    it("刻度含範圍兩端與色階數減一的交界", () => {
+    it("以中位數而非平均決定顏色", () => {
+        const scale = buildColorScale(sampleStats);
+        const skewed: RegionStat = {
+            avg: 30,
+            median: 8,
+            sampleCount: 3,
+            min: 8,
+            max: 30,
+        };
+        expect(scale.colorFor(skewed)).toBe(LEVEL_COLORS[0]);
+    });
+
+    it("刻度含穩健的範圍兩端與色階數減一的交界", () => {
         const ticks = buildColorScale(sampleStats).legendTicks;
         expect(ticks).toHaveLength(LEVEL_COLORS.length + 1);
-        expect(ticks[0]).toEqual({ value: 8, position: 0 });
-        expect(ticks[ticks.length - 1]).toEqual({ value: 12, position: 1 });
+        expect(ticks[0].value).toBeCloseTo(8.2, 5);
+        expect(ticks[0].position).toBe(0);
+        expect(ticks[ticks.length - 1].value).toBeCloseTo(11.8, 5);
+        expect(ticks[ticks.length - 1].position).toBe(1);
         expect(ticks.slice(1, -1)).toHaveLength(LEVEL_COLORS.length - 1);
+    });
+
+    it("極端中位數不會撐開刻度端點", () => {
+        const stats = new Map<string, RegionStat>([
+            ["a", stat(8)],
+            ["b", stat(9)],
+            ["c", stat(10)],
+            ["d", stat(11)],
+            ["e", stat(100)],
+        ]);
+        const ticks = buildColorScale(stats).legendTicks;
+        const last = ticks[ticks.length - 1].value;
+        expect(last).toBeGreaterThan(11);
+        expect(last).toBeLessThan(100);
     });
 
     it("無足夠樣本時不顯示刻度", () => {
@@ -68,6 +102,18 @@ describe("buildColorScale 固定級距模式", () => {
         expect(scale.colorFor(stat(11))).toBe(LEVEL_COLORS[2]);
         expect(scale.colorFor(stat(13))).toBe(LEVEL_COLORS[3]);
         expect(scale.colorFor(stat(20))).toBe(LEVEL_COLORS[4]);
+    });
+
+    it("以中位數而非平均決定顏色", () => {
+        const scale = buildColorScale(new Map(), { mode: "fixed" });
+        const skewed: RegionStat = {
+            avg: 30,
+            median: 7,
+            sampleCount: 3,
+            min: 7,
+            max: 30,
+        };
+        expect(scale.colorFor(skewed)).toBe(LEVEL_COLORS[0]);
     });
 
     it("刻度為各切點，位置平均分佈於色帶交界", () => {

@@ -27,6 +27,8 @@ export function scaleStats(
             avg: stat.avg * factor,
             median: stat.median * factor,
             sampleCount: stat.sampleCount,
+            min: stat.min * factor,
+            max: stat.max * factor,
         });
     }
     return result;

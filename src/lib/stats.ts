@@ -1,9 +1,12 @@
+import { quantile } from "./quantile";
 import { unitPrice, type Shop } from "./shops";
 
 export interface RegionStat {
     avg: number;
     median: number;
     sampleCount: number;
+    min: number;
+    max: number;
 }
 
 function latestUnitPrice(shop: Shop): number | null {
@@ -19,11 +22,7 @@ function average(values: number[]): number {
 }
 
 function median(values: number[]): number {
-    const sorted = [...values].sort((a, b) => a - b);
-    const mid = Math.floor(sorted.length / 2);
-    return sorted.length % 2 === 0
-        ? (sorted[mid - 1] + sorted[mid]) / 2
-        : sorted[mid];
+    return quantile(values, 0.5);
 }
 
 function aggregateBy(
@@ -48,6 +47,8 @@ function aggregateBy(
             avg: average(values),
             median: median(values),
             sampleCount: values.length,
+            min: Math.min(...values),
+            max: Math.max(...values),
         });
     }
     return result;

@@ -1,4 +1,5 @@
 import { scaleQuantile, scaleThreshold } from "d3-scale";
+import { quantile } from "./quantile";
 import type { RegionStat } from "./stats";
 
 export const NO_DATA_COLOR = "#e0d7c6";
@@ -49,7 +50,7 @@ export function buildColorScale(
             colorFor: (stat) => {
                 if (!stat) return NO_DATA_COLOR;
                 if (stat.sampleCount < MIN_SAMPLE) return LOW_SAMPLE_COLOR;
-                return scale(stat.avg);
+                return scale(stat.median);
             },
             colors,
             legendTicks: breaks.map((value, index) => ({
@@ -61,7 +62,7 @@ export function buildColorScale(
 
     const values: number[] = [];
     for (const stat of stats.values()) {
-        if (stat.sampleCount >= MIN_SAMPLE) values.push(stat.avg);
+        if (stat.sampleCount >= MIN_SAMPLE) values.push(stat.median);
     }
 
     if (values.length === 0) {
@@ -77,19 +78,19 @@ export function buildColorScale(
         .range([...LEVEL_COLORS]);
     const thresholds = scale.quantiles();
     const legendTicks: LegendTick[] = [
-        { value: Math.min(...values), position: 0 },
+        { value: quantile(values, 0.05), position: 0 },
         ...thresholds.map((value, index) => ({
             value,
             position: (index + 1) / colors.length,
         })),
-        { value: Math.max(...values), position: 1 },
+        { value: quantile(values, 0.95), position: 1 },
     ];
 
     return {
         colorFor: (stat) => {
             if (!stat) return NO_DATA_COLOR;
             if (stat.sampleCount < MIN_SAMPLE) return LOW_SAMPLE_COLOR;
-            return scale(stat.avg);
+            return scale(stat.median);
         },
         colors,
         legendTicks,

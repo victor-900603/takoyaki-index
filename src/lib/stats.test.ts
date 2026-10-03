@@ -36,7 +36,7 @@ describe("unitPrice", () => {
 });
 
 describe("aggregateByCounty", () => {
-    it("計算平均、中位數與樣本數", () => {
+    it("計算平均、中位數、樣本數與範圍", () => {
         const shops = [
             shop("台北市", [record(60)], "a"),
             shop("台北市", [record(72)], "b"),
@@ -49,11 +49,15 @@ describe("aggregateByCounty", () => {
             avg: 12,
             median: 12,
             sampleCount: 3,
+            min: 10,
+            max: 14,
         });
         expect(stats.get("高雄市")).toEqual({
             avg: 9,
             median: 9,
             sampleCount: 1,
+            min: 9,
+            max: 9,
         });
     });
 
@@ -70,6 +74,8 @@ describe("aggregateByCounty", () => {
             avg: 12,
             median: 12,
             sampleCount: 1,
+            min: 12,
+            max: 12,
         });
     });
 
@@ -88,6 +94,26 @@ describe("aggregateByCounty", () => {
             avg: 11,
             median: 11,
             sampleCount: 2,
+            min: 10,
+            max: 12,
+        });
+    });
+
+    it("不剔除極端值，範圍反映真實樣本", () => {
+        const shops = [
+            shop("屏東縣", [record(54)], "a"),
+            shop("屏東縣", [record(54)], "b"),
+            shop("屏東縣", [record(60)], "c"),
+            shop("屏東縣", [record(60)], "d"),
+            shop("屏東縣", [record(204)], "e"),
+        ];
+
+        expect(aggregateByCounty(shops).get("屏東縣")).toEqual({
+            avg: 14.4,
+            median: 10,
+            sampleCount: 5,
+            min: 9,
+            max: 34,
         });
     });
 });
@@ -106,11 +132,15 @@ describe("aggregateByDistrict", () => {
             avg: 11,
             median: 11,
             sampleCount: 2,
+            min: 10,
+            max: 12,
         });
         expect(stats.get("大安區")).toEqual({
             avg: 14,
             median: 14,
             sampleCount: 1,
+            min: 14,
+            max: 14,
         });
         expect(stats.has("苓雅區")).toBe(false);
     });
@@ -125,6 +155,8 @@ describe("aggregateByDistrict", () => {
             avg: 10,
             median: 10,
             sampleCount: 1,
+            min: 10,
+            max: 10,
         });
     });
 

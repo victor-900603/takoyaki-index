@@ -26,6 +26,9 @@ export default function MapTooltip({
                     <span>
                         中位數 {stat.median.toFixed(1)} {unit}
                     </span>
+                    <span>
+                        範圍 {stat.min.toFixed(1)}–{stat.max.toFixed(1)} {unit}
+                    </span>
                     <span>樣本 {stat.sampleCount} 間</span>
                 </>
             ) : (

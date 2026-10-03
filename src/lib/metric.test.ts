@@ -3,9 +3,9 @@ import { METRIC_FACTOR, scaleStats } from "./metric";
 import type { RegionStat } from "./stats";
 
 describe("scaleStats", () => {
-    it("以係數換算平均與中位數，樣本數不變", () => {
+    it("以係數換算平均、中位數與範圍，樣本數不變", () => {
         const stats = new Map<string, RegionStat>([
-            ["台北市", { avg: 10, median: 9, sampleCount: 3 }],
+            ["台北市", { avg: 10, median: 9, sampleCount: 3, min: 8, max: 9 }],
         ]);
 
         const scaled = scaleStats(stats, METRIC_FACTOR.box6);
@@ -13,12 +13,14 @@ describe("scaleStats", () => {
             avg: 60,
             median: 54,
             sampleCount: 3,
+            min: 48,
+            max: 54,
         });
     });
 
     it("係數為 1 時數值不變", () => {
         const stats = new Map<string, RegionStat>([
-            ["高雄市", { avg: 9.5, median: 9, sampleCount: 4 }],
+            ["高雄市", { avg: 9.5, median: 9, sampleCount: 4, min: 8, max: 11 }],
         ]);
 
         const scaled = scaleStats(stats, METRIC_FACTOR.unit);
@@ -26,12 +28,14 @@ describe("scaleStats", () => {
             avg: 9.5,
             median: 9,
             sampleCount: 4,
+            min: 8,
+            max: 11,
         });
     });
 
     it("不修改來源 Map", () => {
         const stats = new Map<string, RegionStat>([
-            ["台中市", { avg: 11, median: 11, sampleCount: 2 }],
+            ["台中市", { avg: 11, median: 11, sampleCount: 2, min: 10, max: 12 }],
         ]);
 
         scaleStats(stats, METRIC_FACTOR.box6);
