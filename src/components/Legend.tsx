@@ -2,24 +2,17 @@ import {
     LOW_SAMPLE_COLOR,
     MIN_SAMPLE,
     NO_DATA_COLOR,
+    type LegendTick,
 } from "../lib/colorScale";
 
 interface LegendProps {
-    thresholds: number[];
+    ticks: LegendTick[];
     colors: readonly string[];
-    domain: [number, number] | null;
     title: string;
 }
 
-export default function Legend({
-    thresholds,
-    colors,
-    domain,
-    title,
-}: LegendProps) {
-    const hasScale = domain !== null && thresholds.length > 0;
-    const ticks = hasScale ? [domain[0], ...thresholds, domain[1]] : [];
-    const segmentCount = colors.length;
+export default function Legend({ ticks, colors, title }: LegendProps) {
+    const hasScale = ticks.length > 0;
     return (
         <div className="legend">
             <h2 className="legend__title">{title}</h2>
@@ -35,17 +28,15 @@ export default function Legend({
                         ))}
                     </div>
                     <div className="legend__ticks">
-                        {ticks.map((value, index) => (
+                        {ticks.map((tick, index) => (
                             <span
                                 key={index}
                                 className="legend__tick"
-                                style={{
-                                    left: `${(index / segmentCount) * 100}%`,
-                                }}
+                                style={{ left: `${tick.position * 100}%` }}
                             >
                                 <span className="legend__tick-mark" />
                                 <span className="legend__tick-label">
-                                    {value.toFixed(1)}
+                                    {tick.value.toFixed(1)}
                                 </span>
                             </span>
                         ))}

@@ -5,16 +5,27 @@ interface MapTooltipProps {
     y: number;
     name: string;
     stat: RegionStat | undefined;
+    unit: string;
 }
 
-export default function MapTooltip({ x, y, name, stat }: MapTooltipProps) {
+export default function MapTooltip({
+    x,
+    y,
+    name,
+    stat,
+    unit,
+}: MapTooltipProps) {
     return (
         <div className="map-tooltip" style={{ left: x, top: y }}>
             <strong className="map-tooltip__name">{name}</strong>
             {stat ? (
                 <>
-                    <span>平均 {stat.avg.toFixed(1)} 元／顆</span>
-                    <span>中位數 {stat.median.toFixed(1)} 元／顆</span>
+                    <span>
+                        平均 {stat.avg.toFixed(1)} {unit}
+                    </span>
+                    <span>
+                        中位數 {stat.median.toFixed(1)} {unit}
+                    </span>
                     <span>樣本 {stat.sampleCount} 間</span>
                 </>
             ) : (

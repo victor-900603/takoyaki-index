@@ -121,6 +121,50 @@
     color: var(--text-h);
 }
 
+.view-controls {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+}
+
+.view-controls__group {
+    display: inline-flex;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    overflow: hidden;
+    background: var(--panel);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.view-controls__button {
+    border: 0;
+    background: transparent;
+    color: var(--text-h);
+    font: inherit;
+    font-size: 12px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.view-controls__button + .view-controls__button {
+    border-left: 1px solid var(--border);
+}
+
+.view-controls__button:not(.is-active):hover,
+.view-controls__button:not(.is-active):focus-visible {
+    color: var(--accent);
+}
+
+.view-controls__button.is-active {
+    background: var(--accent);
+    color: #fff;
+}
+
 .info-panel {
     background: var(--panel);
     border: 1px solid var(--border);

@@ -2,6 +2,7 @@ import { useMemo, useRef, useState } from "react";
 import TaiwanMap from "./components/TaiwanMap";
 import Legend from "./components/Legend";
 import MapTooltip from "./components/MapTooltip";
+import ViewControls from "./components/ViewControls";
 import { useTaiwanGeo } from "./hooks/useTaiwanGeo";
 import { useShops } from "./hooks/useShops";
 import {
@@ -9,7 +10,18 @@ import {
     aggregateByDistrict,
     type RegionStat,
 } from "./lib/stats";
-import { buildColorScale } from "./lib/colorScale";
+import {
+    buildColorScale,
+    DEFAULT_FIXED_BREAKS,
+    type ScaleMode,
+} from "./lib/colorScale";
+import {
+    METRIC_FACTOR,
+    METRIC_LABEL,
+    METRIC_UNIT,
+    scaleStats,
+    type Metric,
+} from "./lib/metric";
 import "./App.css";
 
 interface HoverState {
@@ -28,7 +40,11 @@ function App() {
         null,
     );
     const [hover, setHover] = useState<HoverState | null>(null);
+    const [metric, setMetric] = useState<Metric>("unit");
+    const [scaleMode, setScaleMode] = useState<ScaleMode>("quantile");
     const panelRef = useRef<HTMLElement>(null);
+
+    const factor = METRIC_FACTOR[metric];
 
     const statsByCounty = useMemo(() => aggregateByCounty(shops), [shops]);
     const statsByDistrict = useMemo(
@@ -41,9 +57,17 @@ function App() {
 
     const activeStats =
         view.level === "town" ? statsByDistrict : statsByCounty;
+    const displayStats = useMemo(
+        () => scaleStats(activeStats, factor),
+        [activeStats, factor],
+    );
     const colorScale = useMemo(
-        () => buildColorScale(activeStats),
-        [activeStats],
+        () =>
+            buildColorScale(displayStats, {
+                mode: scaleMode,
+                fixedBreaks: DEFAULT_FIXED_BREAKS.map((value) => value * factor),
+            }),
+        [displayStats, scaleMode, factor],
     );
 
     const fillByRegion = useMemo(() => {
@@ -53,16 +77,16 @@ function App() {
             for (const town of geo.towns) {
                 if (town.properties.COUNTYNAME !== view.county) continue;
                 const name = town.properties.TOWNNAME;
-                fills.set(name, colorScale.colorFor(statsByDistrict.get(name)));
+                fills.set(name, colorScale.colorFor(displayStats.get(name)));
             }
         } else {
             for (const feature of geo.counties) {
                 const name = feature.properties.COUNTYNAME;
-                fills.set(name, colorScale.colorFor(statsByCounty.get(name)));
+                fills.set(name, colorScale.colorFor(displayStats.get(name)));
             }
         }
         return fills;
-    }, [geo, view, colorScale, statsByCounty, statsByDistrict]);
+    }, [geo, view, colorScale, displayStats]);
 
     const handleSelectRegion = (name: string) => {
         if (view.level === "county") {
@@ -97,8 +121,12 @@ function App() {
 
     const isTownView = view.level === "town";
     const selectedStat = isTownView && selectedDistrict
-        ? statsByDistrict.get(selectedDistrict)
+        ? displayStats.get(selectedDistrict)
         : undefined;
+    const unit = METRIC_UNIT[metric];
+    const legendTitle = `${isTownView ? "鄉鎮市區" : "縣市"}${
+        METRIC_LABEL[metric]
+    }（元）`;
 
     return (
         <div className="app">
@@ -132,6 +160,12 @@ function App() {
                             </nav>
                         </div>
                     )}
+                    <ViewControls
+                        metric={metric}
+                        onMetricChange={setMetric}
+                        scaleMode={scaleMode}
+                        onScaleModeChange={setScaleMode}
+                    />
                     {geoLoading && (
                         <p className="map-panel__status">地圖載入中…</p>
                     )}
@@ -154,21 +188,17 @@ function App() {
                         />
                     )}
                     <Legend
-                        thresholds={colorScale.thresholds}
+                        ticks={colorScale.legendTicks}
                         colors={colorScale.colors}
-                        domain={colorScale.domain}
-                        title={
-                            isTownView
-                                ? "鄉鎮市區每顆單價（元）"
-                                : "縣市每顆單價（元）"
-                        }
+                        title={legendTitle}
                     />
                     {hover && (
                         <MapTooltip
                             x={hover.x}
                             y={hover.y}
                             name={hover.name}
-                            stat={activeStats.get(hover.name)}
+                            stat={displayStats.get(hover.name)}
+                            unit={unit}
                         />
                     )}
                 </section>
@@ -186,11 +216,15 @@ function App() {
                         <dl className="info-panel__stats">
                             <div>
                                 <dt>平均</dt>
-                                <dd>{selectedStat.avg.toFixed(1)} 元／顆</dd>
+                                <dd>
+                                    {selectedStat.avg.toFixed(1)} {unit}
+                                </dd>
                             </div>
                             <div>
                                 <dt>中位數</dt>
-                                <dd>{selectedStat.median.toFixed(1)} 元／顆</dd>
+                                <dd>
+                                    {selectedStat.median.toFixed(1)} {unit}
+                                </dd>
                             </div>
                             <div>
                                 <dt>樣本</dt>
