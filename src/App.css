@@ -130,17 +130,25 @@
     stroke-width: 0.7;
     cursor: pointer;
     outline: none;
-    transition: filter 0.12s ease, stroke 0.12s ease;
+    transition: filter 0.12s ease;
 }
 
 .taiwan-map__region:hover,
 .taiwan-map__region:focus-visible {
     filter: brightness(0.94) saturate(1.08);
+}
+
+.taiwan-map__outline {
+    fill: none;
+    pointer-events: none;
+}
+
+.taiwan-map__outline--hover {
     stroke: var(--ink);
     stroke-width: 1;
 }
 
-.taiwan-map__region.is-selected {
+.taiwan-map__outline--selected {
     stroke: var(--accent);
     stroke-width: 2.2;
     filter: drop-shadow(0 2px 5px rgba(216, 69, 42, 0.45));

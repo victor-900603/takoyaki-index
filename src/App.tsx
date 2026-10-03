@@ -187,6 +187,7 @@ function App() {
                             selectedRegion={
                                 isTownView ? selectedDistrict : null
                             }
+                            hoveredRegion={hover?.name ?? null}
                             fillByRegion={fillByRegion}
                             onSelectRegion={handleSelectRegion}
                             onHoverRegion={handleHoverRegion}

@@ -37,6 +37,7 @@ interface TaiwanMapProps {
     level: ViewLevel;
     county: string | null;
     selectedRegion: string | null;
+    hoveredRegion: string | null;
     fillByRegion: Map<string, string>;
     onSelectRegion: (name: string) => void;
     onHoverRegion: (name: string | null, point: HoverPoint | null) => void;
@@ -190,6 +191,7 @@ export default function TaiwanMap({
     level,
     county,
     selectedRegion,
+    hoveredRegion,
     fillByRegion,
     onSelectRegion,
     onHoverRegion,
@@ -204,6 +206,18 @@ export default function TaiwanMap({
     );
     const { regions, insets, label } =
         level === "town" && townView ? townView : countyView;
+
+    const pathByName = new Map<string, string>();
+    for (const region of regions) pathByName.set(region.name, region.d);
+    for (const inset of insets) pathByName.set(inset.key, inset.d);
+
+    const selectedPath = selectedRegion
+        ? pathByName.get(selectedRegion)
+        : undefined;
+    const hoveredPath =
+        hoveredRegion && hoveredRegion !== selectedRegion
+            ? pathByName.get(hoveredRegion)
+            : undefined;
 
     return (
         <svg
@@ -249,6 +263,18 @@ export default function TaiwanMap({
                     />
                 </g>
             ))}
+            {selectedPath && (
+                <path
+                    className="taiwan-map__outline taiwan-map__outline--selected"
+                    d={selectedPath}
+                />
+            )}
+            {hoveredPath && (
+                <path
+                    className="taiwan-map__outline taiwan-map__outline--hover"
+                    d={hoveredPath}
+                />
+            )}
         </svg>
     );
 }
