@@ -1,1 +1,16 @@
-[]
+[
+    {
+        "place_id": "0x3442a9b6ef81e4bd:0x2ca0da5c7866e8f2",
+        "name": "日船章魚小丸子（樹林中華店）",
+        "county": "新北市",
+        "district": "樹林區",
+        "prices": [
+            {
+                "box_price": 65,
+                "pieces_per_box": 6,
+                "observed_at": "2026-10-01",
+                "source": "manual"
+            }
+        ]
+    }
+]
