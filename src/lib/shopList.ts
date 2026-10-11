@@ -39,7 +39,14 @@ export function sortShops(shops: Shop[], sort: ShopSort): Shop[] {
     return sorted;
 }
 
+const FID_PATTERN = /^0x[0-9a-fA-F]+:(0x[0-9a-fA-F]+)$/;
+
 export function mapsSearchUrl(shop: Shop): string {
+    const fid = FID_PATTERN.exec(shop.place_id);
+    if (fid) {
+        const cid = BigInt(fid[1]).toString();
+        return `https://www.google.com/maps?cid=${cid}`;
+    }
     const query = `${shop.name} ${shop.county}${shop.district}`;
     return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
         query,

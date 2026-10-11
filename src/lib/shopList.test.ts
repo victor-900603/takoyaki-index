@@ -106,6 +106,16 @@ describe("mapsSearchUrl", () => {
             )}`,
         );
     });
+
+    it("FID 形式的識別碼改用 cid 連結", () => {
+        const withFid: Shop = {
+            ...shops[0],
+            place_id: "0x3442a9b6ef81e4bd:0x2ca0da5c7866e8f2",
+        };
+        expect(mapsSearchUrl(withFid)).toBe(
+            "https://www.google.com/maps?cid=3215810224634390770",
+        );
+    });
 });
 
 describe("searchShops", () => {
