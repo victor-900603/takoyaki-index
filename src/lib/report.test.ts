@@ -85,6 +85,17 @@ describe("extractMapRef", () => {
         expect(ref).toEqual({ id: "0x3442a:0x1b2c3", lat: 25.033, lng: 121.5654 });
     });
 
+    it("優先採用地點座標而非視埠中心", () => {
+        const ref = extractMapRef(
+            "https://www.google.com/maps/place/x/@24.9802825,121.3399508,13z/data=!4m7!1s0x3442a9b6ef81e4bd:0x2ca0da5c7866e8f2!8m2!3d24.9802825!4d121.4161685",
+        );
+        expect(ref).toEqual({
+            id: "0x3442a9b6ef81e4bd:0x2ca0da5c7866e8f2",
+            lat: 24.9802825,
+            lng: 121.4161685,
+        });
+    });
+
     it("優先採用 place_id", () => {
         const ref = extractMapRef(
             "https://www.google.com/maps/@25.0,121.0,15z?q=place_id:ChIJabcdef-123",

@@ -79,13 +79,15 @@ export interface MapRef {
     lng: number;
 }
 
-const COORD_PATTERN = /@(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/;
+const PLACE_COORD_PATTERN = /!3d(-?\d+(?:\.\d+)?)!4d(-?\d+(?:\.\d+)?)/;
+const VIEWPORT_COORD_PATTERN = /@(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/;
 const PLACE_ID_PATTERN = /place_id:(ChIJ[\w-]+)/;
 const FID_PATTERN = /!1s(0x[0-9a-fA-F]+:0x[0-9a-fA-F]+)/;
 const CHIJ_PATTERN = /!1s(ChIJ[\w-]+)/;
 
 export function extractMapRef(url: string): MapRef | null {
-    const coord = COORD_PATTERN.exec(url);
+    const coord =
+        PLACE_COORD_PATTERN.exec(url) ?? VIEWPORT_COORD_PATTERN.exec(url);
     if (!coord) return null;
 
     const lat = Number(coord[1]);
