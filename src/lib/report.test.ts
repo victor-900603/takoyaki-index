@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
     buildShop,
     extractMapRef,
+    extractPlaceName,
     findTown,
     parseIssueBody,
     type ReportFields,
@@ -71,9 +72,29 @@ describe("parseIssueBody", () => {
         expect(fields.note).toBe("");
     });
 
-    it("缺少店名與連結時回報錯誤", () => {
+    it("缺少連結時回報錯誤", () => {
         const { errors } = parseIssueBody("### 盒價（元）\n\n60");
-        expect(errors).toEqual(["缺少店名", "缺少 Google Maps 連結"]);
+        expect(errors).toEqual(["缺少 Google Maps 連結"]);
+    });
+
+    it("店名留空時不視為錯誤", () => {
+        const { fields, errors } = parseIssueBody(
+            [
+                "### 店名",
+                "",
+                "_No response_",
+                "",
+                "### Google Maps 連結",
+                "",
+                "https://www.google.com/maps/place/%E7%AB%A0%E9%AD%9A%E7%87%92/@25.03,121.56,17z",
+                "",
+                "### 盒價（元）",
+                "",
+                "60",
+            ].join("\n"),
+        );
+        expect(errors).toEqual([]);
+        expect(fields.name).toBe("");
     });
 });
 
@@ -155,5 +176,27 @@ describe("buildShop", () => {
                 },
             ],
         });
+    });
+});
+
+describe("extractPlaceName", () => {
+    it("從 /place/ 取得店名並解碼", () => {
+        expect(
+            extractPlaceName(
+                "https://www.google.com/maps/place/%E7%AB%A0%E9%AD%9A%E7%87%92%E5%B0%88%E8%B3%A3%E5%BA%97/@25.03,121.56,17z",
+            ),
+        ).toBe("章魚燒專賣店");
+    });
+
+    it("從 /search/ 取得店名", () => {
+        expect(
+            extractPlaceName("https://www.google.com/maps/search/日船章魚燒/"),
+        ).toBe("日船章魚燒");
+    });
+
+    it("沒有店名區段時回傳 null", () => {
+        expect(
+            extractPlaceName("https://www.google.com/maps/@25.03,121.56,17z"),
+        ).toBeNull();
     });
 });

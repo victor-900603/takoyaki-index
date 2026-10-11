@@ -3,7 +3,7 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildTopoRegions } from "./topo";
 import { resolveMapRef } from "./mapRef";
-import { buildShop, findTown, parseIssueBody } from "../src/lib/report";
+import { buildShop, extractPlaceName, findTown, parseIssueBody } from "../src/lib/report";
 import { dedupeShops, validateShops } from "../src/lib/shopData";
 import type { Shop } from "../src/lib/shops";
 
@@ -25,15 +25,24 @@ async function main(): Promise<void> {
 
     const { fields, errors } = parseIssueBody(body);
 
-    const ref = await resolveMapRef(fields.mapUrl);
+    const resolved = await resolveMapRef(fields.mapUrl);
 
     if (errors.length > 0) fail(errors);
-    if (!ref) fail(["無法從 Google Maps 連結取得座標與識別碼"]);
+    if (!resolved) fail(["無法從 Google Maps 連結取得座標與識別碼"]);
 
+    const ref = resolved.ref;
     const town = findTown(towns, ref.lng, ref.lat);
     if (!town) fail(["座標不在台灣行政區範圍內"]);
 
-    const shop = buildShop(fields, ref, town, `github-issue#${issueNumber}`);
+    const name = fields.name || extractPlaceName(resolved.url) || "";
+    if (!name) fail(["缺少店名，且無法從連結取得"]);
+
+    const shop = buildShop(
+        { ...fields, name },
+        ref,
+        town,
+        `github-issue#${issueNumber}`,
+    );
     const raw = JSON.parse(readFileSync(rawPath, "utf8")) as Shop[];
     const { shops, warnings } = dedupeShops([...raw, shop]);
 

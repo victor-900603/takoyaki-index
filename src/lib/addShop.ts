@@ -7,18 +7,23 @@ export interface AddArgs {
 
 const DEFAULT_PIECES = "6";
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+const URL_PATTERN = /^https?:\/\//i;
 
 export function parseAddArgs(argv: string[], today: string): AddArgs {
-    const positional = argv.filter((token) => token !== "--" && !token.startsWith("--"));
+    const tokens = argv.filter(
+        (token) => token !== "--" && !token.startsWith("--"),
+    );
 
-    const name = (positional[0] ?? "").trim();
-    const url = (positional[1] ?? "").trim();
-    const price = (positional[2] ?? "").trim();
-    const pieces = (positional[3] ?? DEFAULT_PIECES).trim();
-    const date = (positional[4] ?? today).trim();
+    const hasName = tokens.length > 0 && !URL_PATTERN.test(tokens[0]);
+    const name = hasName ? tokens[0].trim() : "";
+    const rest = hasName ? tokens.slice(1) : tokens;
+
+    const url = (rest[0] ?? "").trim();
+    const price = (rest[1] ?? "").trim();
+    const pieces = (rest[2] ?? DEFAULT_PIECES).trim();
+    const date = (rest[3] ?? today).trim();
 
     const errors: string[] = [];
-    if (!name) errors.push("缺少店名");
     if (!url) errors.push("缺少 Google Maps 連結");
     if (!price) {
         errors.push("缺少盒價");

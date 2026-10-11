@@ -52,11 +52,19 @@ describe("parseAddArgs", () => {
 
     it("缺少必填時回報錯誤", () => {
         const args = parseAddArgs([], TODAY);
-        expect(args.errors).toEqual([
-            "缺少店名",
-            "缺少 Google Maps 連結",
-            "缺少盒價",
-        ]);
+        expect(args.errors).toEqual(["缺少 Google Maps 連結", "缺少盒價"]);
+    });
+
+    it("省略店名時以連結為第一個參數", () => {
+        const args = parseAddArgs(
+            ["https://maps.example/x", "50"],
+            TODAY,
+        );
+
+        expect(args.errors).toEqual([]);
+        expect(args.fields.name).toBe("");
+        expect(args.fields.mapUrl).toBe("https://maps.example/x");
+        expect(args.fields.boxPrice).toBe("50");
     });
 
     it("盒價非正數時回報錯誤", () => {

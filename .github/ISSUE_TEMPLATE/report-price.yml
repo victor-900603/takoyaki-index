@@ -7,10 +7,10 @@ body:
       id: name
       attributes:
           label: 店名
-          description: 章魚燒店的名稱
-          placeholder: 章魚燒專賣店
+          description: 可留空，系統會自動從連結取名；建議格式「店名(分店)」，例如「日船章魚小丸子(樹林中華店)」
+          placeholder: 日船章魚小丸子(樹林中華店)
       validations:
-          required: true
+          required: false
     - type: input
       id: map_url
       attributes:

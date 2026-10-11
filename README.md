@@ -27,7 +27,7 @@
 發現新的店家，或某家店漲價、降價了，都歡迎回報：
 
 1. 開啟[價格回報表單](.github/ISSUE_TEMPLATE/report-price.yml)。
-2. 填寫店名、Google Maps 連結、盒價、每盒顆數與觀測日期。
+2. 填寫 Google Maps 連結、盒價、每盒顆數與觀測日期；店名可留空，系統會自動從連結取名（建議格式「店名(分店)」，例如「日船章魚小丸子(樹林中華店)」）。
 3. 系統會自動解析位置、判定所在行政區，並開立更新提案，經確認後就會更新到地圖上。
 
 ## 資料從哪來
@@ -57,7 +57,7 @@ npm run preview       # 預覽建置結果
 沒有 Google Places API key 也能建檔：在 Google Maps 找到店家後複製連結，執行：
 
 ```bash
-npm run data:add -- "店名" "<Google Maps 連結>" 盒價 [每盒顆數] [觀測日期]
+npm run data:add -- ["店名"] "<Google Maps 連結>" 盒價 [每盒顆數] [觀測日期]
 ```
 
 例如：
@@ -66,7 +66,13 @@ npm run data:add -- "店名" "<Google Maps 連結>" 盒價 [每盒顆數] [觀�
 npm run data:add -- "章魚燒專賣店" "https://maps.app.goo.gl/xxxx" 60 6 2026-10-01
 ```
 
-連結可貼 Google Maps 分享的短網址，系統會自動解出座標、判定行政區並併入 `data/raw/shops.json`；顆數預設 6、日期預設當天。可用環境變數 `ADD_SOURCE` 標記來源、`ADD_RAW_PATH` 指定其他來源檔。
+店名可省略，直接以連結開頭，系統會自動從連結取得店名：
+
+```bash
+npm run data:add -- "https://maps.app.goo.gl/xxxx" 60
+```
+
+連結可貼 Google Maps 分享的短網址，系統會自動解出座標、判定行政區並併入 `data/raw/shops.json`；顆數預設 6、日期預設當天。店名建議以「店名(分店)」格式命名，例如「日船章魚小丸子(樹林中華店)」。可用環境變數 `ADD_SOURCE` 標記來源、`ADD_RAW_PATH` 指定其他來源檔。
 
 主要目錄：
 

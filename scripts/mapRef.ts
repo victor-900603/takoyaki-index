@@ -1,14 +1,20 @@
 import { extractMapRef, type MapRef } from "../src/lib/report";
 
-export async function resolveMapRef(url: string): Promise<MapRef | null> {
+export interface ResolvedMap {
+    ref: MapRef;
+    url: string;
+}
+
+export async function resolveMapRef(url: string): Promise<ResolvedMap | null> {
     const direct = extractMapRef(url);
-    if (direct) return direct;
+    if (direct) return { ref: direct, url };
     if (!/^https?:\/\//.test(url)) return null;
 
     try {
         const response = await fetch(url, { redirect: "follow" });
         if (!response.url) return null;
-        return extractMapRef(response.url);
+        const ref = extractMapRef(response.url);
+        return ref ? { ref, url: response.url } : null;
     } catch {
         return null;
     }

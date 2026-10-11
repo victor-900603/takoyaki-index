@@ -67,7 +67,6 @@ export function parseIssueBody(body: string): ParsedReport {
     };
 
     const errors: string[] = [];
-    if (!fields.name) errors.push("缺少店名");
     if (!fields.mapUrl) errors.push("缺少 Google Maps 連結");
 
     return { fields, errors };
@@ -84,6 +83,8 @@ const VIEWPORT_COORD_PATTERN = /@(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/;
 const PLACE_ID_PATTERN = /place_id:(ChIJ[\w-]+)/;
 const FID_PATTERN = /!1s(0x[0-9a-fA-F]+:0x[0-9a-fA-F]+)/;
 const CHIJ_PATTERN = /!1s(ChIJ[\w-]+)/;
+const PLACE_NAME_PATTERN = /\/place\/([^/]+)/;
+const SEARCH_NAME_PATTERN = /\/search\/([^/]+)/;
 
 export function extractMapRef(url: string): MapRef | null {
     const coord =
@@ -101,6 +102,16 @@ export function extractMapRef(url: string): MapRef | null {
         `coord:${lat},${lng}`;
 
     return { id, lat, lng };
+}
+
+export function extractPlaceName(url: string): string | null {
+    const match = PLACE_NAME_PATTERN.exec(url) ?? SEARCH_NAME_PATTERN.exec(url);
+    if (!match) return null;
+    try {
+        return decodeURIComponent(match[1]).trim() || null;
+    } catch {
+        return null;
+    }
 }
 
 export function findTown(
