@@ -12,5 +12,19 @@
                 "source": "manual"
             }
         ]
+    },
+    {
+        "place_id": "0x3468033a24cce2af:0x688aab4ce39e9c8f",
+        "name": "日船章魚小丸子（板橋湳雅店）",
+        "county": "新北市",
+        "district": "板橋區",
+        "prices": [
+            {
+                "box_price": 60,
+                "pieces_per_box": 6,
+                "observed_at": "2026-10-01",
+                "source": "manual"
+            }
+        ]
     }
 ]
